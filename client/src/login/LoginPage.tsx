@@ -1,4 +1,4 @@
-import "./LgoinPage.css";
+import "./LoginPage.css";
 import { useState } from "react";
 import { Link, Link as RouterLink, useNavigate } from "react-router-dom";
 

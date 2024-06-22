@@ -1,0 +1,22 @@
+.loginMain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20rem;
+}
+
+.loginMain h1 {
+  text-align: center;
+}
+
+.checkbox {
+  display: flex;
+  justify-content: flex-end;
+  width: 20rem;
+}
+
+.signup {
+  display: flex;
+  align-items: center;
+  padding-left: 2rem;
+}

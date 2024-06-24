@@ -1,23 +1,15 @@
-import {
-  Button,
-  CssBaseline,
-  TextField,
-  FormControl,
-  Grid,
-  Box,
-  Container,
-} from "@mui/material/";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Button, CssBaseline, TextField, FormControl, Grid, Box, Container } from '@mui/material/';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
   const navigate = useNavigate();
 
-  const [userEmail, setUserEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [userEmail, setUserEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState('');
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -34,21 +26,21 @@ function SignUp() {
     if (!selectedImage) return;
 
     const formData = new FormData();
-    formData.append("image", selectedImage);
+    formData.append('image', selectedImage);
 
     try {
-      const response = await fetch("http://localhost:4000/upload", {
-        method: "POST",
+      const response = await fetch('http://localhost:4000/upload', {
+        method: 'POST',
         body: formData,
       });
 
       if (response.ok) {
-        console.log("이미지 업로드 성공");
+        console.log('이미지 업로드 성공');
       } else {
-        console.error("이미지 업로드 실패");
+        console.error('이미지 업로드 실패');
       }
     } catch (error) {
-      console.error("업로드 에러:", error);
+      console.error('업로드 에러:', error);
     }
   }
 
@@ -56,20 +48,18 @@ function SignUp() {
     if (!selectedImage) return;
     setSelectedImage(null);
     setPreviewUrl(null);
-    console.log("미리보기 이미지가 삭제되었습니다.");
+    console.log('미리보기 이미지가 삭제되었습니다.');
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      console.log(
-        `유저이메일: ${userEmail}, 유저 닉네임: ${userName}, 이미지 : ${selectedImage}`,
-      );
-      console.log("회원가입");
+      console.log(`유저이메일: ${userEmail}, 유저 닉네임: ${userName}, 이미지 : ${selectedImage}`);
+      console.log('회원가입');
       await handleUpload();
-      navigate("/");
+      navigate('/');
     } catch (error) {
-      console.error("에러발생");
+      console.error('에러발생');
     }
   }
 
@@ -80,9 +70,9 @@ function SignUp() {
         <Box
           sx={{
             marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
           <div>
@@ -96,20 +86,16 @@ function SignUp() {
                 <div>
                   <img
                     style={{
-                      width: "200px",
-                      height: "auto",
-                      borderRadius: "50%",
+                      width: '200px',
+                      height: 'auto',
+                      borderRadius: '50%',
                     }}
                     src={previewUrl}
                     alt="Preview"
                   />
                 </div>
                 <div>
-                  <Button
-                    variant="contained"
-                    onClick={handleRemove}
-                    sx={{ mt: 2 }}
-                  >
+                  <Button variant="contained" onClick={handleRemove} sx={{ mt: 2 }}>
                     x
                   </Button>
                 </div>
@@ -168,13 +154,7 @@ function SignUp() {
                   />
                 </Grid>
               </Grid>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                size="large"
-              >
+              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} size="large">
                 회원가입
               </Button>
             </FormControl>

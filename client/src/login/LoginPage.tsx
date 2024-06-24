@@ -96,7 +96,7 @@ function LoginPage() {
         </div>
         <div className="signup">
           <p> 회원이 아니시라면 👉</p>
-          <Link to={"./signup"}> 회원 가입하기 </Link>
+          <Link to={"/signup"}> 회원 가입하기 </Link>
         </div>
       </Box>
     </div>

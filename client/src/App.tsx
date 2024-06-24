@@ -8,13 +8,15 @@ import {
 
 import LoginPage from "./login/LoginPage";
 import SignUp from "./login/SignUp";
+import Home from "./Home";
 
 function App() {
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          {/* <Route path="/" element={<Navigate to="/login" replace />} /> */}
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUp />} />
         </Routes>

@@ -80,7 +80,6 @@ function RestaurantsMap({ places, selectedAddress }: MapProps) {
                 if (status !== naver.maps.Service.Status.OK) {
                   return alert('Something went wrong!');
                 }
-                console.log(response); // 응답 객체 확인
                 const location = response.v2.addresses[0];
                 const latlng = new naver.maps.LatLng(location.y, location.x);
 

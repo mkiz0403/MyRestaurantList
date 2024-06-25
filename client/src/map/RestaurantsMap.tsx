@@ -36,13 +36,14 @@ function RestaurantsMap({ places, selectedAddress }: MapProps) {
 
           const mapOptions = {
             center: new naver.maps.LatLng(latitude, longitude),
-            zoom: 18,
+            zoom: 16,
+            zoomControl: true,
             zoomControlOptions: {
+              style: naver.maps.ZoomControlStyle.LARGE,
               position: naver.maps.Position.TOP_RIGHT,
             },
           };
 
-          // 현재 위치 마커로 표시하기
           const map = new naver.maps.Map(mapRef.current, mapOptions);
 
           new naver.maps.Marker({
@@ -62,16 +63,42 @@ function RestaurantsMap({ places, selectedAddress }: MapProps) {
                 const location = response.v2.addresses[0];
                 const latlng = new naver.maps.LatLng(location.y, location.x);
 
-                new naver.maps.Marker({
+                const marker = new naver.maps.Marker({
                   position: latlng,
                   map: map,
                   title: place.placeName,
+                });
+                const infoWindow = new naver.maps.InfoWindow({
+                  content: [
+                    '<div style="padding: 10px; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 16px 0px;">',
+                    `   <div style="font-weight: bold; margin-bottom: 5px;">${place.placeName}</div>`,
+                    `   <div style="font-size: 13px;">${place.review}<div>`,
+                    '</div>',
+                  ].join(''),
+                  maxWidth: 300,
+                  anchorSize: {
+                    width: 12,
+                    height: 14,
+                  },
+                  borderColor: '#cecdc7',
+                });
+
+                naver.maps.Event.addListener(marker, 'click', () => {
+                  if (infoWindow.getMap()) {
+                    infoWindow.close();
+                  } else {
+                    infoWindow.open(map, marker);
+                  }
                 });
               },
             );
           });
 
           if (selectedAddress) {
+            const selectedPlace = places.find((place) => place.address === selectedAddress);
+            const selectedTitle = selectedPlace ? selectedPlace.placeName : '정보 없음';
+            const selectedReview = selectedPlace ? selectedPlace.review : '정보 없음';
+
             naver.maps.Service.geocode(
               {
                 query: selectedAddress,
@@ -83,11 +110,33 @@ function RestaurantsMap({ places, selectedAddress }: MapProps) {
                 const location = response.v2.addresses[0];
                 const latlng = new naver.maps.LatLng(location.y, location.x);
 
-                new naver.maps.Marker({
+                const marker = new naver.maps.Marker({
                   position: latlng,
                   map: map,
                 });
-                console.log(position);
+                const infoWindow = new naver.maps.InfoWindow({
+                  content: [
+                    '<div style="padding: 10px; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 16px 0px;">',
+                    `   <div style="font-weight: bold; margin-bottom: 5px;">${selectedTitle}</div>`,
+                    `   <div style="font-size: 13px;">${selectedReview}<div>`,
+                    '</div>',
+                  ].join(''),
+                  maxWidth: 300,
+                  anchorSize: {
+                    width: 12,
+                    height: 14,
+                  },
+                  borderColor: '#cecdc7',
+                });
+
+                naver.maps.Event.addListener(marker, 'click', () => {
+                  if (infoWindow.getMap()) {
+                    infoWindow.close();
+                  } else {
+                    infoWindow.open(map, marker);
+                  }
+                });
+
                 map.setCenter(latlng);
               },
             );
@@ -106,7 +155,7 @@ function RestaurantsMap({ places, selectedAddress }: MapProps) {
       ref={mapRef}
       style={{
         width: '100%',
-        height: '800px',
+        height: '1100px',
         display: 'flex',
         marginTop: '5px',
         marginLeft: '10px',

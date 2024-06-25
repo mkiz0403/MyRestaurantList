@@ -47,18 +47,17 @@ import { useState } from 'react';
 import './Home.css';
 import RestaurantsMap from './map/RestaurantsMap';
 import RestaurantsInfo from './place/RestaurantsInfo';
-import Category from './user/Category';
+import UserInfo from './user/UserInfo';
+// import Category from './user/Category';
 
 function Home() {
   const [selectedAddress, setSelectedAddress] = useState<string>('');
 
   return (
     <>
-      {/* <div style={{ width: '100%', display: 'flex', height: '100%' }}>
-        <div style={{ width: '30%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}> */}
       <div className="home-container">
         <div className="info-container">
-          {/* <Category /> */}
+          <UserInfo />
           <RestaurantsInfo places={places} onSelectAddress={setSelectedAddress} />
         </div>
         <RestaurantsMap places={places} selectedAddress={selectedAddress} />

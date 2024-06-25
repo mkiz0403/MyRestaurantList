@@ -9,7 +9,7 @@ function SignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [userName, setUserName] = useState('');
+  const [userNickName, setUserNickName] = useState('');
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -54,7 +54,7 @@ function SignUp() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      console.log(`유저이메일: ${userEmail}, 유저 닉네임: ${userName}, 이미지 : ${selectedImage}`);
+      console.log(`유저이메일: ${userEmail}, 유저 닉네임: ${userNickName}, 이미지 : ${selectedImage}`);
       console.log('회원가입');
       await handleUpload();
       navigate('/');
@@ -122,11 +122,11 @@ function SignUp() {
                   <TextField
                     required
                     fullWidth
-                    id="userName"
-                    name="userName"
+                    id="userNickName"
+                    name="userNickName"
                     label="닉네임"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
+                    value={userNickName}
+                    onChange={(e) => setUserNickName(e.target.value)}
                   />
                 </Grid>
                 <Grid item xs={12}>

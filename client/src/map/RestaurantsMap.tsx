@@ -106,15 +106,15 @@ function RestaurantsMap({ places, selectedAddress }: MapProps) {
     <div
       ref={mapRef}
       style={{
+        padding: 0,
         width: '70%',
         height: '800px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop: '20px',
       }}
-    >
-      <h1>Map</h1>
-    </div>
+    ></div>
   );
 }
 export default RestaurantsMap;

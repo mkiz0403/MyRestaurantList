@@ -1,9 +1,11 @@
 import express, { Request, Response } from 'express';
 import userFileSystem from './services/userFileSystem';
+import cors from 'cors';
 
 const app = express();
 const port = 4000;
 
+app.use(cors());
 app.use(express.json());
 
 app.post('/login', async (req, res) => {

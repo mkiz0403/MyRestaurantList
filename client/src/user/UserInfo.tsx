@@ -50,6 +50,9 @@ function UserInfo() {
           <div className="profile-foodtaste">
             <span>🍲 한식의 아이콘</span>
           </div>
+          <div>
+            <button>정보수정</button>
+          </div>
         </div>
       </div>
       <CategoryList />

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Link as RouterLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
 import RestorauntMapImage from '../../public/RestorauntMapImage.webp';
+import { login } from '../../api/userRestaurantApi';
+import UserInterface from '../models/user.interface';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -10,6 +11,16 @@ function LoginPage() {
   const [userEmail, setUserEmail] = useState('');
   const [password, setPassword] = useState('');
   const [saveLoginInfo, setSaveLoginInfo] = useState(false);
+
+  useEffect(() => {
+    const savedUserEmail = localStorage.getItem('userEmail');
+    const savedUserPassword = localStorage.getItem('password');
+    if (savedUserEmail && savedUserPassword) {
+      setUserEmail(savedUserEmail);
+      setPassword(savedUserPassword);
+      setSaveLoginInfo(true);
+    }
+  }, []);
 
   async function handleLogin(e: { preventDefault: () => void }) {
     e.preventDefault();
@@ -25,8 +36,8 @@ function LoginPage() {
     }
 
     try {
-      console.log('로그인 성공!');
-      console.log(userEmail, password);
+      const user: UserInterface | undefined = await login(userEmail, password);
+      console.log('로그인 성공', user);
       if (saveLoginInfo) {
         localStorage.setItem('userId', userEmail);
         localStorage.setItem('password', password);
@@ -54,7 +65,13 @@ function LoginPage() {
             </FormFiled>
             <FormFiled />
             <Label>비밀번호</Label>
-            <Input required id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Input
+              required
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </FormFiled>
         </Form>
         <AutoLogin>

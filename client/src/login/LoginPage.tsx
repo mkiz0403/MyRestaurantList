@@ -1,4 +1,3 @@
-import './LoginPage.css';
 import { useState } from 'react';
 import { Link, Link as RouterLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -83,13 +82,12 @@ const Container = styled.div`
   margin: auto;
   display: flex;
   align-items: center;
-  /* justify-content: center; */
   justify-content: flex-end;
 `;
 
 const Image = styled.img`
   width: 100%;
-  height: 1100px;
+  height: 800px;
   padding-right: 20px;
 `;
 

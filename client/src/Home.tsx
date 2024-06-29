@@ -26,7 +26,7 @@ const places = [
   },
   {
     imageUrl: 'https://img.siksinhot.com/story/1525664445806217.jpg?w=540&h=436&c=Y',
-    foodType: '한식',
+    foodType: '양식',
     placeName: '신자네 연탄구이',
     review: '멜젓 맛있는 곳',
     address: '전북 군산시 부곡1길 17',
@@ -46,21 +46,36 @@ const places = [
 import { useState } from 'react';
 import './Home.css';
 import RestaurantsMap from './map/RestaurantsMap';
-import RestaurantsInfo from './place/RestaurantsInfo';
+import RestaruantList from './place/RestaruantCategoryList';
+import CreateRestaurantsItem from './place/CreateRestaurantsItem';
 import UserInfo from './user/UserInfo';
 // import Category from './user/Category';
 
 function Home() {
   const [selectedAddress, setSelectedAddress] = useState<string>('');
+  const [isCreateItemVisible, setCreateItemVisible] = useState(false);
+
+  const handleOpenCreateItem = () => {
+    setCreateItemVisible(true);
+  };
+
+  const handleCloseCreateItem = () => {
+    setCreateItemVisible(false);
+  };
 
   return (
     <>
       <div className="home-container">
         <div className="info-container">
           <UserInfo />
-          <RestaurantsInfo places={places} onSelectAddress={setSelectedAddress} />
+          <RestaruantList
+            places={places}
+            onSelectAddress={setSelectedAddress}
+            onOpenCreateitme={handleOpenCreateItem}
+          />
         </div>
         <RestaurantsMap places={places} selectedAddress={selectedAddress} />
+        {isCreateItemVisible && <CreateRestaurantsItem onClose={handleCloseCreateItem} />}
       </div>
     </>
   );

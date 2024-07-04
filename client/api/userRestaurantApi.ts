@@ -18,3 +18,16 @@ export async function login(userEmail: string, password: string): Promise<UserIn
     console.error('로그인 에러 발생');
   }
 }
+
+export async function signup(
+  userEmail: string,
+  password: string,
+  userNickName: string,
+): Promise<UserInterface | undefined> {
+  try {
+    const res = await userRestaurentAxios.post('./signup', { userEmail, password, userNickName });
+    return res.data;
+  } catch (error) {
+    console.error('에러발생');
+  }
+}

@@ -1,6 +1,7 @@
 import { Button, CssBaseline, TextField, FormControl, Grid, Box, Container } from '@mui/material/';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { signup } from '../../api/userRestaurantApi';
 
 function SignUp() {
   const navigate = useNavigate();
@@ -12,13 +13,21 @@ function SignUp() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      alert('패스워드를 확인해 주세요.');
+    }
     try {
+      const userInfo = await signup(userEmail, password, userNickName);
       console.log(`유저이메일: ${userEmail}, 유저 닉네임: ${userNickName}`);
       console.log('회원가입');
       navigate('/');
     } catch (error) {
       console.error('에러발생');
     }
+  }
+
+  function handlcancle() {
+    navigate('/login');
   }
 
   return (
@@ -90,6 +99,9 @@ function SignUp() {
               </Grid>
               <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} size="large">
                 회원가입
+              </Button>
+              <Button fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} size="large" onClick={handlcancle}>
+                취소하기
               </Button>
             </FormControl>
           </Box>

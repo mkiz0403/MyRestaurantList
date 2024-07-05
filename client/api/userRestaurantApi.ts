@@ -31,3 +31,26 @@ export async function signup(
     console.error('에러발생');
   }
 }
+
+export async function getUser(userEmail: string): Promise<UserInterface | undefined> {
+  try {
+    const res = await userRestaurentAxios.get(`./${userEmail}`);
+    return res.data;
+  } catch (error) {
+    console.error('유저 정보를 가져올 수 없습니다.');
+  }
+}
+
+export async function userUpdate(
+  userEmail: string,
+  password: string,
+  userImg: string,
+  userNickName: string,
+): Promise<UserInterface | undefined> {
+  try {
+    const res = await userRestaurentAxios.put(`./update/${userEmail}`, { password, userImg, userNickName });
+    return res.data;
+  } catch (error) {
+    console.error('업데이트 실패');
+  }
+}

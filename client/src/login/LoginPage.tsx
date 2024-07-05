@@ -36,17 +36,24 @@ function LoginPage() {
     }
 
     try {
-      const user: UserInterface | undefined = await login(userEmail, password);
-      console.log('로그인 성공', user);
-      if (saveLoginInfo) {
-        localStorage.setItem('userId', userEmail);
-        localStorage.setItem('password', password);
-      } else {
-        localStorage.removeItem('userId');
-        localStorage.removeItem('password');
+      const res = await login(userEmail, password);
+      if (res) {
+        const { token, user } = res;
+
+        localStorage.setItem('jwtToken', token);
+        localStorage.setItem('userEmail', userEmail);
+        console.log('로그인 성공', user);
+
+        if (saveLoginInfo) {
+          localStorage.setItem('userId', userEmail);
+          localStorage.setItem('password', password);
+        } else {
+          localStorage.removeItem('userId');
+          localStorage.removeItem('password');
+        }
+        navigate(`/${userEmail}`);
+        console.log(saveLoginInfo);
       }
-      navigate('/');
-      console.log(saveLoginInfo);
     } catch (error) {
       console.error('로그인 실패');
     }

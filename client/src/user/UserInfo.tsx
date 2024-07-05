@@ -3,18 +3,21 @@ import { useState, ChangeEvent } from 'react';
 import testImage from '../../public/testImage.png';
 import cameraImage from '../../public/pngwing.com.png';
 import CategoryList from './CategoryList';
+import {} from '../../api/userRestaurantApi';
+import UserInterface from '../models/user.interface';
 
-useState;
-
-interface User {
-  userNickName: string;
-  foodTaste: string;
-  userImage: string;
+interface UserInfoProps {
+  userEmail?: string;
+  userNickName?: string;
+  userImg?: string;
+  onUpdateUserInfo: () => void;
+  onUserLogOut: (e: React.FormEvent) => Promise<void>;
 }
 
-function UserInfo() {
+function UserInfo({ userEmail, userNickName, userImg, onUpdateUserInfo, onUserLogOut }: UserInfoProps) {
   const [userProfile, setUserProfile] = useState<string>(testImage);
   const [previewImage, setPreviewImage] = useState<string>(userProfile);
+  const [userData, setUserData] = useState<UserInterface | undefined>(undefined);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -45,13 +48,14 @@ function UserInfo() {
         </div>
         <div className="profile-info">
           <div className="profile-nickname">
-            <strong>맛있는녀석들</strong>
+            <strong>{userNickName}</strong>
           </div>
           <div className="profile-foodtaste">
             <span>🍲 한식의 아이콘</span>
           </div>
           <div>
-            <button>정보수정</button>
+            <button onClick={onUpdateUserInfo}>정보수정</button>
+            <button onClick={onUserLogOut}>로그아웃</button>
           </div>
         </div>
       </div>

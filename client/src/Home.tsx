@@ -43,31 +43,91 @@ const places = [
   },
 ];
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import RestaurantsMap from './map/RestaurantsMap';
 import RestaruantList from './place/RestaruantCategoryList';
 import CreateRestaurantsItem from './place/CreateRestaurantsItem';
 import UserInfo from './user/UserInfo';
+import UpdateUserInfo from './user/UpdataUserInfo';
 // import Category from './user/Category';
+import UserInterface from './models/user.interface';
+import { getUser } from '../api/userRestaurantApi';
 
 function Home() {
+  const navigate = useNavigate();
+
   const [selectedAddress, setSelectedAddress] = useState<string>('');
   const [isCreateItemVisible, setCreateItemVisible] = useState(false);
+  const [isUpdateUserInfoVisible, setUpdateUserInfoVisible] = useState(false);
+  const [currentNickname, setCurrentNickname] = useState<string>('');
+  const [userInfo, setUserInfo] = useState<UserInterface | undefined>();
+  const [places, setPlaces] = useState<any[]>([]);
 
-  const handleOpenCreateItem = () => {
+  function handleOpenCreateItem() {
     setCreateItemVisible(true);
-  };
+  }
 
-  const handleCloseCreateItem = () => {
+  function handleCloseCreateItem() {
     setCreateItemVisible(false);
-  };
+  }
+
+  function handleOpenUpdateUserInfo(nickName: string) {
+    setCurrentNickname(nickName);
+    setUpdateUserInfoVisible(true);
+  }
+
+  function handleCloseUpdateUserInfo() {
+    setUpdateUserInfoVisible(false);
+  }
+
+  async function handleLogout(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('userEmail');
+
+      alert('로그아웃 됐습니다.');
+      navigate('/login');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const token = localStorage.getItem('jwtToken');
+      const userEmail = localStorage.getItem('userEmail');
+      if (token && userEmail) {
+        const user = await getUser(userEmail, token);
+        if (user) {
+          setUserInfo(user);
+          setPlaces(user.userRestaurent || []);
+        }
+      } else {
+        navigate('/login');
+      }
+    };
+
+    fetchUserInfo();
+  }, [navigate]);
 
   return (
     <>
       <div className="home-container">
         <div className="info-container">
-          <UserInfo />
+          <UserInfo
+            userEmail={userInfo?.userEmail}
+            userNickName={userInfo?.userNickName}
+            userImg={userInfo?.userImg}
+            onUpdateUserInfo={() => {
+              if (userInfo?.userNickName) {
+                handleOpenUpdateUserInfo(userInfo.userNickName);
+              }
+            }}
+            onUserLogOut={handleLogout}
+          />
           <RestaruantList
             places={places}
             onSelectAddress={setSelectedAddress}
@@ -76,6 +136,9 @@ function Home() {
         </div>
         <RestaurantsMap places={places} selectedAddress={selectedAddress} />
         {isCreateItemVisible && <CreateRestaurantsItem onClose={handleCloseCreateItem} />}
+        {isUpdateUserInfoVisible && (
+          <UpdateUserInfo currentNickname={currentNickname} onClose={handleCloseUpdateUserInfo} />
+        )}
       </div>
     </>
   );

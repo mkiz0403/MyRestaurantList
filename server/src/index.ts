@@ -12,6 +12,7 @@ const secretKey = 'secreat_dont_share';
 app.use(cors());
 app.use(express.json());
 
+//로그인
 app.post('/login', async (req, res) => {
   const { userEmail, password } = req.body;
   console.log(userEmail, password);
@@ -41,19 +42,22 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// 회원가입
 app.post('/signup', async (req, res) => {
   const { userEmail, password, userNickName } = req.body;
   console.log(userEmail, password, userNickName);
 
   try {
     const newUser = await userFileSystem.createUser({
-      userEmail,
-      password,
-      userNickName,
-      userType: '맛집 탐험가 🔍',
+      userNickName: userNickName,
+      userEmail: userEmail,
+      password: password,
       userImg: '',
+      userType: '맛집 탐험가 🧭',
       userRestaurent: [],
-    } as UserInterface);
+      newPassword: '',
+      confirmNewPassword: '',
+    });
 
     if (!newUser?.userEmail) {
       return res.status(400).send({ message: '동일한 이메일이 존재합니다.' });
@@ -66,7 +70,8 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-app.get('/:userEmail', async (req, res) => {
+// 유저 불러오기
+app.get('/user/:userEmail', async (req, res) => {
   const { userEmail } = req.params;
 
   try {
@@ -82,15 +87,19 @@ app.get('/:userEmail', async (req, res) => {
   }
 });
 
-app.put('/update/:userEmail', async (req, res) => {
-  const { userEmail, password, userNickName, userImg } = req.body;
+// 유저 업데이트
+app.put('/user/update/:userEmail', async (req, res) => {
+  const { password, userNickName, userImg, newPassword, confirmNewPassword } = req.body;
+  const userEmail = req.params.userEmail;
 
   try {
     const updatedUser = await userFileSystem.userUpdate(userEmail, {
       password,
       userNickName,
       userImg,
-    } as UserInterface);
+      newPassword,
+      confirmNewPassword,
+    });
 
     if (updatedUser) {
       res.status(200).json({ message: '업데이트가 성공했습니다.', user: updatedUser });
@@ -100,6 +109,46 @@ app.put('/update/:userEmail', async (req, res) => {
   } catch (error) {
     console.error('업데이트 실패');
     res.status(500).json({ message: '업데이트 중 오류 발생!!!' });
+  }
+});
+
+// 유저의 스토어 정보 불러오기
+app.get('/user/:userEmail/restaurunt', async (req, res) => {
+  try {
+  } catch (error) {
+    console.error('레스토랑 불러오기 실패');
+  }
+});
+
+// 특정 스토어 정보 불러오기
+app.get('/user/:userEmail/restaurant/:storeId', async (req, res) => {
+  try {
+  } catch (error) {
+    console.error('일치하는 음식점이 없습니다.');
+  }
+});
+
+// 스토어 등록하기
+app.post('/user/:userEmail/restaurant', async (req, res) => {
+  try {
+  } catch (error) {
+    console.error('음식점 생성 실패');
+  }
+});
+
+// 스토어 정보 업데이트 하기
+app.put('/user/:userEmail/restaurant/update/:storeId', async (req, res) => {
+  try {
+  } catch (error) {
+    console.error('음식점 업데이트 실패');
+  }
+});
+
+// 스토어 삭제하기
+app.delete('/user/:userEmail/restaurant/:storeId', async (req, res) => {
+  try {
+  } catch (error) {
+    console.error('음식점 삭제 실패');
   }
 });
 

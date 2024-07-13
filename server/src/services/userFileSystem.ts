@@ -53,25 +53,57 @@ async function createUser(newUser: UserInterface): Promise<UserInterface | undef
 
 // 기존 유저 정보를 업데이트 하는 함수
 
-async function userUpdate(userEmail: string, updateUser: UserInterface): Promise<UserInterface | undefined> {
+interface UserUpdateInterface {
+  userEmail: string;
+  userNickName: string;
+  password?: string;
+  newPassword?: string;
+  confirmNewPassword?: string;
+  userImg?: string;
+}
+
+async function userUpdate(
+  userEmail: string,
+  updateUser: Partial<UserUpdateInterface> & {
+    userNickName: string;
+    password?: string;
+    newPassword?: string;
+    confirmNewPassword?: string;
+  },
+): Promise<UserInterface | undefined> {
   try {
     const data = await fs.readFile(userDataFilePath, 'utf8');
     const users: UserInterface[] = JSON.parse(data);
 
     const findUser = users.findIndex((user) => user.userEmail === userEmail);
-    if (!findUser) {
+    if (findUser === -1) {
       console.log('유저를 찾을 수 없습니다.');
+      return undefined;
     }
 
     let user = users[findUser];
 
     if (updateUser.password) {
-      const saltRound = 10;
-      user.password = await bcrypt.hash(updateUser.password, saltRound);
+      const passwordMatch = await bcrypt.compare(updateUser.password!, user.password);
+      if (!passwordMatch) {
+        console.log('기존 비밀번호가 일치하지 않습니다.');
+        return undefined;
+      }
+
+      if (updateUser.newPassword && updateUser.newPassword === updateUser.confirmNewPassword) {
+        const saltRound = 10;
+        user.password = await bcrypt.hash(updateUser.newPassword, saltRound);
+      } else if (updateUser.newPassword !== updateUser.confirmNewPassword) {
+        console.log('새 비밀번호와 확인 비밀번호가 일치하지 않습니다.');
+        return undefined;
+      }
     }
 
     if (updateUser.userNickName) {
       user.userNickName = updateUser.userNickName;
+    } else {
+      alert('닉네임은 필수입니다.');
+      return undefined;
     }
 
     if (updateUser.userImg) {
@@ -87,12 +119,6 @@ async function userUpdate(userEmail: string, updateUser: UserInterface): Promise
     console.error('유저 정보 업데이트 실패');
     throw error;
   }
-  // 유저 데이터 파일을 읽는다.
-  // 해당 유저와 일치하는 유저의 데이터를 찾는다
-  // 기존 유저의 데이터를 가져온다.
-  // 업데이트할 필드만 업데이트 한다.
-  // 업데이트한 유저의 데이터 저장
-  // 파일 저장
 }
 
 // 유저의 맛집 리스트를 불러오는 함수

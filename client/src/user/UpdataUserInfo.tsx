@@ -1,20 +1,23 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import styled from 'styled-components';
-import { userUpdate, getUser } from '../../api/userRestaurantApi';
+import { userUpdate } from '../../api/userRestaurantApi';
 import UserInterface from '../models/user.interface';
 
 interface UpdateUserInfoProps {
+  userEmail: string;
   currentNickname: string;
   onClose: () => void;
+  onUpdate: (updatedUser: UserInterface) => void;
 }
 
-function UpdateUserInfo({ currentNickname, onClose }: UpdateUserInfoProps) {
-  const [userData, setUserData] = useState<UserInterface | undefined>(undefined);
+function UpdateUserInfo({ userEmail, currentNickname, onClose, onUpdate }: UpdateUserInfoProps) {
   const [formData, setFormData] = useState({
+    userEmail: userEmail,
     userNickName: currentNickname,
-    curruntPassword: '',
+    password: '',
     newPassword: '',
     confirmNewPassword: '',
+    userImg: '',
   });
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -29,14 +32,19 @@ function UpdateUserInfo({ currentNickname, onClose }: UpdateUserInfoProps) {
       return;
     }
     try {
-      await userUpdate(
+      const updatedUser = await userUpdate(
+        formData.userEmail,
         formData.userNickName,
-        formData.curruntPassword,
-        formData.newPassword,
-        formData.confirmNewPassword,
+        formData.password || undefined,
+        formData.newPassword || undefined,
+        formData.confirmNewPassword || undefined,
+        formData.userImg || undefined,
       );
-      alert('정보가 성공적으로 업데이트되었습니다.');
-      onClose();
+      if (updatedUser) {
+        alert('정보가 성공적으로 업데이트되었습니다.');
+        onUpdate(updatedUser);
+        onClose();
+      }
     } catch (error) {
       console.error('업데이트 실패', error);
       alert('업데이트 실패');
@@ -51,7 +59,7 @@ function UpdateUserInfo({ currentNickname, onClose }: UpdateUserInfoProps) {
           <Form onSubmit={handleSubmit}>
             <TextBox>
               <Label>이메일</Label>
-              <Text>mkiz0403@gmail.com</Text>
+              <Text>{formData.userEmail}</Text>
             </TextBox>
             <InputBox>
               <Label> 닉네임</Label>
@@ -59,47 +67,42 @@ function UpdateUserInfo({ currentNickname, onClose }: UpdateUserInfoProps) {
                 required
                 id="userNickName"
                 name="userNickName"
-                value={formData.userNickName}
+                type="text"
+                value={formData?.userNickName}
                 onChange={handleChange}
               />
             </InputBox>
             <InputBox>
               <Label>기존 비밀번호</Label>
-              <Input
-                required
-                id="currentPassword"
-                name="currentPassword"
-                value={formData.curruntPassword}
-                onChange={handleChange}
-              />
+              <Input id="password" name="password" type="password" value={formData?.password} onChange={handleChange} />
             </InputBox>
             <InputBox>
               <Label>새로운 비밀번호</Label>
               <Input
-                required
-                id="newPasswrord"
-                name="newPasswrord"
-                value={formData.newPassword}
+                id="newPassword"
+                name="newPassword"
+                type="password"
+                value={formData?.newPassword}
                 onChange={handleChange}
               />
             </InputBox>
             <InputBox>
               <Label>비밀번호 확인</Label>
               <Input
-                required
-                id="confimNewPasswrord"
-                name="confimNewPasswrord"
-                value={formData.confirmNewPassword}
+                id="confirmNewPassword"
+                name="confirmNewPassword"
+                type="password"
+                value={formData?.confirmNewPassword}
                 onChange={handleChange}
-              />{' '}
+              />
             </InputBox>
+            <ButtonBox>
+              <Button type="submit">수정하기</Button>
+              <Button type="button" onClick={onClose}>
+                취소
+              </Button>
+            </ButtonBox>
           </Form>
-          <ButtonBox>
-            <Button type="submit">수정하기</Button>
-            <Button type="button" onClick={onClose}>
-              취소
-            </Button>
-          </ButtonBox>
         </Box>
       </Container>
     </>
@@ -180,10 +183,10 @@ const Text = styled.h2`
 `;
 
 const ButtonBox = styled.div`
+  width: 80%;
   display: flex;
   justify-content: space-between;
-  padding: 20px;
-  gap: 20px;
+  margin-top: 20px;
 `;
 
 const Button = styled.button`
@@ -194,4 +197,6 @@ const Button = styled.button`
   border-radius: 5px;
   font-size: 18px;
   color: white;
+  margin-left: 5px;
+  margin-right: 5px;
 `;

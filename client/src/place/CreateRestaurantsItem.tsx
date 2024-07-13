@@ -1,10 +1,46 @@
-import { Button, CssBaseline, TextField, FormControl, Grid, Box, Container } from '@mui/material/';
+import * as React from 'react';
+
+import {
+  Button,
+  CssBaseline,
+  TextField,
+  FormControl,
+  Grid,
+  Box,
+  Container,
+  MenuItem,
+  InputLabel,
+  OutlinedInput,
+} from '@mui/material/';
+import { Theme, useTheme } from '@mui/material/styles';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
 import { useState } from 'react';
 import { Restaurant } from './RestaruantCategoryList';
 import { useNavigate } from 'react-router-dom';
 
 interface CreateRestaurantsItemProps {
   onClose: () => void;
+}
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const names = ['한식', '양식', '일식', '중식', '기타'];
+
+function getStyles(name: string, personName: string[], theme: Theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
+  };
 }
 
 function CreateRestaurantsItem({ onClose }: CreateRestaurantsItemProps) {
@@ -22,6 +58,19 @@ function CreateRestaurantsItem({ onClose }: CreateRestaurantsItemProps) {
       throw error;
     }
   }
+
+  const theme = useTheme();
+  const [personName, setPersonName] = React.useState<string[]>([]);
+
+  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+    const {
+      target: { value },
+    } = event;
+    setPersonName(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
 
   return (
     <>
@@ -54,15 +103,26 @@ function CreateRestaurantsItem({ onClose }: CreateRestaurantsItemProps) {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    id="foodType"
-                    name="foodType"
-                    label="음식유형"
-                    value={foodType}
-                    onChange={(e) => setFoodType(e.target.value)}
-                  />
+                  <div>
+                    <FormControl sx={{ width: 400 }}>
+                      <InputLabel id="demo-multiple-name-label">음식종류</InputLabel>
+                      <Select
+                        labelId="demo-multiple-name-label"
+                        id="demo-multiple-name"
+                        multiple
+                        value={personName}
+                        onChange={handleChange}
+                        input={<OutlinedInput label="Name" />}
+                        MenuProps={MenuProps}
+                      >
+                        {names.map((name) => (
+                          <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
+                            {name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
@@ -92,7 +152,7 @@ function CreateRestaurantsItem({ onClose }: CreateRestaurantsItemProps) {
               <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} size="large">
                 맛집 등록 하기
               </Button>
-              <Button onClick={onClose} fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} size="large">
+              <Button onClick={onClose} fullWidth variant="contained" sx={{ mb: 2 }} size="large">
                 닫 기
               </Button>
             </FormControl>

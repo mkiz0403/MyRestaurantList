@@ -1,15 +1,17 @@
 export default interface UserInterface {
   userNickName: string;
   userEmail: string;
+  userType: string;
+  newPassword: string;
+  confirmNewPassword: string;
   password: string;
   userImg?: string;
-  userType: string;
   userRestaurent?: {
+    foodType: string;
+    placeName: string;
+    address: string;
     imageUrl?: string;
-    foodType?: string;
-    placeName?: string;
     review?: string;
-    address?: string;
     visitsCount?: number;
   }[];
 }

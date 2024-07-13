@@ -20,7 +20,8 @@ function SignUp() {
       const userInfo = await signup(userEmail, password, userNickName);
       console.log(`유저이메일: ${userEmail}, 유저 닉네임: ${userNickName}`);
       console.log('회원가입');
-      navigate('/');
+      alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
+      navigate('/login');
     } catch (error) {
       console.error('에러발생');
     }

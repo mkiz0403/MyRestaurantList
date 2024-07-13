@@ -37,7 +37,7 @@ export async function signup(
 
 export async function getUser(userEmail: string, token: string): Promise<UserInterface | undefined> {
   try {
-    const res = await userRestaurentAxios.get(`/${userEmail}`, {
+    const res = await userRestaurentAxios.get(`/user/${userEmail}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -50,14 +50,22 @@ export async function getUser(userEmail: string, token: string): Promise<UserInt
 
 export async function userUpdate(
   userEmail: string,
-  password: string,
-  userImg: string,
   userNickName: string,
+  password?: string,
+  newPassword?: string,
+  confirmNewPassword?: string,
+  userImg?: string,
 ): Promise<UserInterface | undefined> {
   try {
-    const res = await userRestaurentAxios.put(`./update/${userEmail}`, { password, userImg, userNickName });
+    const res = await userRestaurentAxios.put(`/user/update/${userEmail}`, {
+      password,
+      newPassword,
+      confirmNewPassword,
+      userNickName,
+      userImg,
+    });
     return res.data;
   } catch (error) {
-    console.error('업데이트 실패');
+    console.error('업데이트 실패', error);
   }
 }

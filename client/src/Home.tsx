@@ -62,6 +62,7 @@ function Home() {
   const [isCreateItemVisible, setCreateItemVisible] = useState(false);
   const [isUpdateUserInfoVisible, setUpdateUserInfoVisible] = useState(false);
   const [currentNickname, setCurrentNickname] = useState<string>('');
+  const [currentUserEmail, setCurrentUserEmail] = useState<string>('');
   const [userInfo, setUserInfo] = useState<UserInterface | undefined>();
   const [places, setPlaces] = useState<any[]>([]);
 
@@ -73,13 +74,17 @@ function Home() {
     setCreateItemVisible(false);
   }
 
-  function handleOpenUpdateUserInfo(nickName: string) {
+  function handleOpenUpdateUserInfo(userEmail: string, nickName: string) {
+    setCurrentUserEmail(userEmail);
     setCurrentNickname(nickName);
     setUpdateUserInfoVisible(true);
   }
 
   function handleCloseUpdateUserInfo() {
     setUpdateUserInfoVisible(false);
+  }
+  function handleUserUpdate(updatedUser: UserInterface) {
+    setUserInfo(updatedUser);
   }
 
   async function handleLogout(e: React.FormEvent) {
@@ -123,7 +128,7 @@ function Home() {
             userImg={userInfo?.userImg}
             onUpdateUserInfo={() => {
               if (userInfo?.userNickName) {
-                handleOpenUpdateUserInfo(userInfo.userNickName);
+                handleOpenUpdateUserInfo(userInfo.userEmail, userInfo.userNickName);
               }
             }}
             onUserLogOut={handleLogout}
@@ -137,7 +142,12 @@ function Home() {
         <RestaurantsMap places={places} selectedAddress={selectedAddress} />
         {isCreateItemVisible && <CreateRestaurantsItem onClose={handleCloseCreateItem} />}
         {isUpdateUserInfoVisible && (
-          <UpdateUserInfo currentNickname={currentNickname} onClose={handleCloseUpdateUserInfo} />
+          <UpdateUserInfo
+            userEmail={currentUserEmail}
+            currentNickname={currentNickname}
+            onClose={handleCloseUpdateUserInfo}
+            onUpdate={handleUserUpdate}
+          />
         )}
       </div>
     </>

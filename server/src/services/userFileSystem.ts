@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs/promises';
 import bcrypt from 'bcrypt';
 import UserInterface from '../models/user.Interface';
+import { Restaurant } from '../models/user.Interface';
 
 const userDataFilePath = path.join(__dirname, '..', 'data', 'userData.json');
 
@@ -123,7 +124,30 @@ async function userUpdate(
 
 // 유저의 맛집 리스트를 불러오는 함수
 
-async function getRestaruantData() {}
+async function findStorebyId(userEmail: string): Promise<Restaurant[] | undefined> {
+  try {
+    const data = await fs.readFile(userDataFilePath, 'utf8');
+    console.log(userDataFilePath);
+    const users: UserInterface[] = JSON.parse(data);
+
+    const user = users.find((user) => user.userEmail === userEmail);
+
+    if (user && user.userRestaurent) {
+      return user.userRestaurent;
+    }
+  } catch (error) {
+    console.error('유저 데이터를 찾는데 오류 발생', error);
+  }
+}
+
+async function getRestaruantData(userEmail: string): Promise<Restaurant[] | undefined> {
+  try {
+    const store = await findStorebyId(userEmail);
+    return store;
+  } catch (error) {
+    console.error('스토어 정보를 가져오지 못했습니다.', error);
+  }
+}
 
 // 유저의 맛집 리스트 아이템을 생성하는 함수
 async function createItem() {}

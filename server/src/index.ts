@@ -113,10 +113,19 @@ app.put('/user/update/:userEmail', async (req, res) => {
 });
 
 // 유저의 스토어 정보 불러오기
-app.get('/user/:userEmail/restaurunt', async (req, res) => {
+app.get('/user/:userEmail/restaurnet', async (req, res) => {
+  const { userEmail } = req.params;
+
   try {
+    const store = await userFileSystem.getRestaruantData(userEmail);
+    if (store) {
+      res.status(200).json(store);
+    } else {
+      res.status(404).json({ message: '유저의 스토어 정보를 찾을 수 없습니다' });
+    }
   } catch (error) {
     console.error('레스토랑 불러오기 실패');
+    res.status(500).json({ message: '유저 스토어 정보를 가져오는 중 오류가 발생했습니다.' });
   }
 });
 

@@ -6,12 +6,14 @@ export default interface UserInterface {
   userType: string;
   newPassword?: string;
   confirmNewPassword?: string;
-  userRestaurent?: {
-    imageUrl?: string;
-    foodType: string;
-    placeName: string;
-    review?: string;
-    address: string;
-    visitsCount?: number;
-  }[];
+  userRestaurent?: Restaurant[];
+}
+
+interface Restaurant {
+  imageUrl?: string;
+  foodType: string;
+  placeName: string;
+  review?: string;
+  address: string;
+  visitsCount?: number;
 }

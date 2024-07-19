@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import userFileSystem from './services/userFileSystem';
 import cors from 'cors';
-import UserInterface, { Restaurant } from './models/user.Interface';
+import UserInterface, { UserStroe } from './models/user.Interface';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -54,7 +54,7 @@ app.post('/signup', async (req, res) => {
       password: password,
       userImg: '',
       userType: '맛집 탐험가 🧭',
-      userRestaurent: [],
+      userStore: [],
       newPassword: '',
       confirmNewPassword: '',
     });
@@ -140,7 +140,7 @@ app.get('/user/:userEmail/restaurant/:storeId', async (req, res) => {
 // 스토어 등록하기
 app.post('/user/:userEmail/restaurant', async (req, res) => {
   const { userEmail } = req.params;
-  const newStore: Restaurant = req.body;
+  const newStore: UserStroe = req.body;
 
   try {
     const store = await userFileSystem.createStore(newStore, userEmail);

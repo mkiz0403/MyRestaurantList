@@ -4,7 +4,6 @@ import cors from 'cors';
 import UserInterface, { Restaurant } from './models/user.Interface';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 const port = 4000;
@@ -144,7 +143,7 @@ app.post('/user/:userEmail/restaurant', async (req, res) => {
   const newStore: Restaurant = req.body;
 
   try {
-    const store = await userFileSystem.createItem(newStore, userEmail);
+    const store = await userFileSystem.createStore(newStore, userEmail);
     res.status(201).json(store);
   } catch (error) {
     console.error('음식점 생성 실패');
@@ -181,7 +180,11 @@ app.put('/user/:userEmail/restaurant/update/:storeId', async (req, res) => {
 
 // 스토어 삭제하기
 app.delete('/user/:userEmail/restaurant/:storeId', async (req, res) => {
+  const { userEmail, storeId } = req.params;
+
   try {
+    const deletedStore = await userFileSystem.deleteOneStore(userEmail, storeId);
+    res.status(200).json({ message: '스토어 삭제 성공', deletedStore });
   } catch (error) {
     console.error('음식점 삭제 실패');
   }

@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import bcrypt from 'bcrypt';
 import UserInterface from '../models/user.Interface';
 import { Restaurant } from '../models/user.Interface';
+import { v4 as uuidv4 } from 'uuid';
 
 const userDataFilePath = path.join(__dirname, '..', 'data', 'userData.json');
 
@@ -150,14 +151,33 @@ async function getRestaruantData(userEmail: string): Promise<Restaurant[] | unde
 }
 
 // 유저의 맛집 리스트 아이템을 생성하는 함수
-async function createItem() {}
+async function createItem(newStore: Restaurant, userEmail: string): Promise<Restaurant | undefined> {
+  try {
+    const data = await fs.readFile(userDataFilePath, 'utf8');
+    const users: UserInterface[] = JSON.parse(data);
+
+    const existUser = users.find((user) => user.userEmail === userEmail);
+    if (!existUser) {
+      throw new Error('유저를 찾을 수 없습니다.');
+    }
+
+    newStore.storeId = uuidv4();
+
+    existUser.userRestaurent?.push(newStore);
+    await fs.writeFile(userDataFilePath, JSON.stringify(users, null, 2), 'utf8');
+
+    return newStore;
+  } catch (error) {
+    console.error('스토어 추가 중 오류!', error);
+    throw error;
+  }
+}
 
 // 유저의 맛집 리스트 아이템을 수정하는 함수
-async function updateItem() {}
 
 // 유저의 맛집 리스트의 일부를 삭제하는 함수
 async function deleteOneItem() {}
 
 // 유저 탈퇴하는 함수
 
-export default { getUser, createUser, userUpdate, getRestaruantData, createItem, updateItem, deleteOneItem };
+export default { getUser, createUser, userUpdate, getRestaruantData, createItem, updateStore, deleteOneItem };

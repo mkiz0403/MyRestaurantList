@@ -153,6 +153,31 @@ app.post('/user/:userEmail/restaurant', async (req, res) => {
 });
 
 // 스토어 정보 업데이트 하기
+app.put('/user/:userEmail/restaurant/update/:storeId', async (req, res) => {
+  const { placeName, address, imageUrl, review, visitsCount, foodType } = req.body;
+  const userEmail = req.params.userEmail;
+  const storeId = req.params.storeId;
+
+  try {
+    const store = await userFileSystem.updateStore(userEmail, {
+      storeId,
+      placeName,
+      address,
+      imageUrl,
+      review,
+      visitsCount,
+      foodType,
+    });
+
+    if (store) {
+      res.status(200).json({ message: '스토어 정보 업데이트 성공', store });
+    } else {
+      res.status(400).json({ message: '스토어 정보를 찾을 수 없습니다.' });
+    }
+  } catch (error) {
+    console.error('음식점 업데이트 실패');
+  }
+});
 
 // 스토어 삭제하기
 app.delete('/user/:userEmail/restaurant/:storeId', async (req, res) => {

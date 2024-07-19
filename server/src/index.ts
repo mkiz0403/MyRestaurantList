@@ -117,7 +117,7 @@ app.get('/user/:userEmail/restaurnet', async (req, res) => {
   const { userEmail } = req.params;
 
   try {
-    const store = await userFileSystem.getRestaruantData(userEmail);
+    const store = await userFileSystem.getStore(userEmail);
     if (store) {
       res.status(200).json(store);
     } else {

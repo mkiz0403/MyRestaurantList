@@ -9,11 +9,12 @@ export default interface UserInterface {
   userRestaurent?: Restaurant[];
 }
 
-interface Restaurant {
-  imageUrl?: string;
+export interface Restaurant {
+  id: string;
+  imageUrl?: string | undefined;
   foodType: string;
   placeName: string;
-  review?: string;
+  review?: string | undefined;
   address: string;
-  visitsCount?: number;
+  visitsCount?: number | undefined;
 }

@@ -10,7 +10,7 @@ export default interface UserInterface {
 }
 
 export interface Restaurant {
-  id: string;
+  storeId: string;
   imageUrl?: string | undefined;
   foodType: string;
   placeName: string;

@@ -1,5 +1,3 @@
-
-import * as React from 'react';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -8,15 +6,7 @@ import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import RestaurantsItem from './RestaurantsItem';
-
-interface Restaurant {
-  imageUrl: string;
-  foodType: string;
-  placeName: string;
-  review: string;
-  address: string;
-  visitsCount: number;
-}
+import { Restaurant } from '../models/user.interface';
 
 interface RestaruantListItemProps {
   icon: string;

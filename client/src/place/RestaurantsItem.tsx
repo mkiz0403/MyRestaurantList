@@ -3,15 +3,7 @@ import { Card, CardHeader, CardActions, IconButton, Collapse, CardContent, CardM
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
-interface Restaurant {
-  imageUrl: string;
-  foodType: string;
-  placeName: string;
-  review: string;
-  address: string;
-  visitsCount: number;
-}
+import { Restaurant } from '../models/user.interface';
 
 interface RestaurantsInfoProps {
   places: Restaurant[];

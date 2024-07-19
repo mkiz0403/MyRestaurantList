@@ -151,7 +151,7 @@ async function getRestaruantData(userEmail: string): Promise<Restaurant[] | unde
 }
 
 // 유저의 맛집 리스트 아이템을 생성하는 함수
-async function createItem(newStore: Restaurant, userEmail: string): Promise<Restaurant | undefined> {
+async function createStore(newStore: Restaurant, userEmail: string): Promise<Restaurant | undefined> {
   try {
     const data = await fs.readFile(userDataFilePath, 'utf8');
     const users: UserInterface[] = JSON.parse(data);
@@ -216,8 +216,8 @@ async function updateStore(
 }
 
 // 유저의 맛집 리스트의 일부를 삭제하는 함수
-async function deleteOneItem() {}
+async function deleteOneStore() {}
 
 // 유저 탈퇴하는 함수
 
-export default { getUser, createUser, userUpdate, getRestaruantData, createItem, updateStore, deleteOneItem };
+export default { getUser, createUser, userUpdate, getRestaruantData, createStore, updateStore, deleteOneStore };

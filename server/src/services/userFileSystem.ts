@@ -174,6 +174,46 @@ async function createItem(newStore: Restaurant, userEmail: string): Promise<Rest
 }
 
 // 유저의 맛집 리스트 아이템을 수정하는 함수
+async function updateStore(
+  userEmail: string,
+  storeDate: {
+    storeId: string;
+    placeName: string;
+    foodType: string;
+    address: string;
+    imageUrl?: string;
+    review?: string;
+    visitsCount?: number;
+  },
+): Promise<UserInterface | undefined> {
+  try {
+    const data = await fs.readFile(userDataFilePath, 'utf8');
+    const users: UserInterface[] = JSON.parse(data);
+
+    const existUser = users.find((user) => user.userEmail === userEmail);
+    if (!existUser) {
+      throw new Error('유저를 찾을 수 없습니다.');
+    }
+
+    const store = existUser.userRestaurent?.find((place) => place.storeId === storeDate.storeId);
+    if (!store) {
+      throw new Error('일치하는 맛집이 없습니다.');
+    }
+
+    store.placeName = storeDate.placeName;
+    store.address = storeDate.address;
+    store.foodType = storeDate.foodType;
+    if (storeDate.imageUrl) store.imageUrl = storeDate.imageUrl;
+    if (storeDate.review) store.review = storeDate.review;
+    if (storeDate.visitsCount !== undefined) store.visitsCount = storeDate.visitsCount;
+
+    await fs.writeFile(userDataFilePath, JSON.stringify(users, null, 2), 'utf8');
+    return existUser;
+  } catch (error) {
+    console.error('업데이트에 실패했습니다.', error);
+    return undefined;
+  }
+}
 
 // 유저의 맛집 리스트의 일부를 삭제하는 함수
 async function deleteOneItem() {}

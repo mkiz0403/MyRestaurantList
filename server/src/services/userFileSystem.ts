@@ -150,10 +150,20 @@ async function getStore(userEmail: string): Promise<UserStroe[] | undefined> {
   }
 }
 //유저의 맛집 리스트 중 특정 스토어만 가져 오는 함수
-async function getOneStore(userEmail: string): Promise<UserStroe[] | undefined> {
+async function getOneStore(userEmail: string, storeId: string): Promise<UserStroe | undefined> {
   try {
     const store = await findStorebyId(userEmail);
-    return store;
+    if (!store) {
+      throw new Error('유저의 맛집 리스트를 찾을 수 없습니다.');
+    }
+
+    const oneStore = store.find((place) => place.storeId === storeId);
+
+    if (!oneStore) {
+      throw Error('일치하는 스토어가 없습니다.');
+    }
+
+    return oneStore;
   } catch (error) {
     console.error('스토어 정보를 가져오지 못했습니다.', error);
   }
@@ -162,18 +172,15 @@ async function getOneStore(userEmail: string): Promise<UserStroe[] | undefined> 
 // 유저의 맛집을 생성하는 함수
 async function createStore(newStore: UserStroe, userEmail: string): Promise<UserStroe | undefined> {
   try {
-    const data = await fs.readFile(userDataFilePath, 'utf8');
-    const users: UserInterface[] = JSON.parse(data);
-
-    const existUser = users.find((user) => user.userEmail === userEmail);
-    if (!existUser) {
+    const stores = await findStorebyId(userEmail);
+    if (!stores) {
       throw new Error('유저를 찾을 수 없습니다.');
     }
 
     newStore.storeId = uuidv4();
 
-    existUser.userStore?.push(newStore);
-    await fs.writeFile(userDataFilePath, JSON.stringify(users, null, 2), 'utf8');
+    stores.push(newStore);
+    await fs.writeFile(userDataFilePath, JSON.stringify(stores, null, 2), 'utf8');
 
     return newStore;
   } catch (error) {
@@ -194,17 +201,14 @@ async function updateStore(
     review?: string;
     visitsCount?: number;
   },
-): Promise<UserInterface | undefined> {
+): Promise<UserStroe | undefined> {
   try {
-    const data = await fs.readFile(userDataFilePath, 'utf8');
-    const users: UserInterface[] = JSON.parse(data);
-
-    const existUser = users.find((user) => user.userEmail === userEmail);
-    if (!existUser) {
+    const stores = await findStorebyId(userEmail);
+    if (!stores) {
       throw new Error('유저를 찾을 수 없습니다.');
     }
 
-    const store = existUser.userStore?.find((place) => place.storeId === storeDate.storeId);
+    const store = stores.find((place) => place.storeId === storeDate.storeId);
     if (!store) {
       throw new Error('일치하는 맛집이 없습니다.');
     }
@@ -216,8 +220,8 @@ async function updateStore(
     if (storeDate.review) store.review = storeDate.review;
     if (storeDate.visitsCount !== undefined) store.visitsCount = storeDate.visitsCount;
 
-    await fs.writeFile(userDataFilePath, JSON.stringify(users, null, 2), 'utf8');
-    return existUser;
+    await fs.writeFile(userDataFilePath, JSON.stringify(store, null, 2), 'utf8');
+    return store;
   } catch (error) {
     console.error('업데이트에 실패했습니다.', error);
     return undefined;
@@ -227,22 +231,19 @@ async function updateStore(
 // 유저의 맛집 일부를 삭제하는 함수
 async function deleteOneStore(userEmail: string, storeId: string): Promise<UserStroe | undefined> {
   try {
-    const data = await fs.readFile(userDataFilePath, 'utf8');
-    const users: UserInterface[] = JSON.parse(data);
+    const stores = await findStorebyId(userEmail);
 
-    const existUser = users.find((user) => userEmail === userEmail);
-
-    if (!existUser) {
+    if (!stores) {
       throw new Error('유저를 찾을 수 없습니다.');
     }
 
-    const storeIndex = existUser.userStore?.findIndex((place) => place.storeId === storeId);
+    const storeIndex = stores?.findIndex((place) => place.storeId === storeId);
     if (!storeIndex) {
       throw new Error('스토어를 찾을 수 없습니다.');
     }
 
-    const [deletedStore] = existUser.userStore!.splice(storeIndex, 1);
-    await fs.writeFile(userDataFilePath, JSON.stringify(users, null, 2), 'utf8');
+    const [deletedStore] = stores.splice(storeIndex, 1);
+    await fs.writeFile(userDataFilePath, JSON.stringify(stores, null, 2), 'utf8');
 
     return deletedStore;
   } catch (error) {
@@ -253,4 +254,4 @@ async function deleteOneStore(userEmail: string, storeId: string): Promise<UserS
 
 // 유저 탈퇴하는 함수
 
-export default { getUser, createUser, userUpdate, getStore, createStore, updateStore, deleteOneStore };
+export default { getUser, createUser, userUpdate, getStore, getOneStore, createStore, updateStore, deleteOneStore };

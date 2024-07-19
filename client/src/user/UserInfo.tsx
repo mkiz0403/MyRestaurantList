@@ -5,16 +5,27 @@ import cameraImage from '../../public/pngwing.com.png';
 import CategoryList from './CategoryList';
 import {} from '../../api/userRestaurantApi';
 import UserInterface from '../models/user.interface';
+import { Restaurant } from '../models/user.interface';
 
 interface UserInfoProps {
   userEmail?: string;
   userNickName?: string;
   userImg?: string;
+  userType: string | undefined;
   onUpdateUserInfo: () => void;
   onUserLogOut: (e: React.FormEvent) => Promise<void>;
+  places: Restaurant[];
 }
 
-function UserInfo({ userEmail, userNickName, userImg, onUpdateUserInfo, onUserLogOut }: UserInfoProps) {
+function UserInfo({
+  places,
+  userEmail,
+  userType,
+  userNickName,
+  userImg,
+  onUpdateUserInfo,
+  onUserLogOut,
+}: UserInfoProps) {
   const [userProfile, setUserProfile] = useState<string>(testImage);
   const [previewImage, setPreviewImage] = useState<string>(userProfile);
   const [userData, setUserData] = useState<UserInterface | undefined>(undefined);
@@ -51,7 +62,7 @@ function UserInfo({ userEmail, userNickName, userImg, onUpdateUserInfo, onUserLo
             <strong>{userNickName}</strong>
           </div>
           <div className="profile-foodtaste">
-            <span>🍲 한식의 아이콘</span>
+            <span>{userType}</span>
           </div>
           <div>
             <button onClick={onUpdateUserInfo}>정보수정</button>
@@ -59,7 +70,7 @@ function UserInfo({ userEmail, userNickName, userImg, onUpdateUserInfo, onUserLo
           </div>
         </div>
       </div>
-      <CategoryList />
+      <CategoryList places={places} />
     </>
   );
 }

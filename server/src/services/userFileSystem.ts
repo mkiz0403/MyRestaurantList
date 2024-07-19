@@ -216,7 +216,31 @@ async function updateStore(
 }
 
 // 유저의 맛집 리스트의 일부를 삭제하는 함수
-async function deleteOneStore() {}
+async function deleteOneStore(userEmail: string, storeId: string): Promise<Restaurant | undefined> {
+  try {
+    const data = await fs.readFile(userDataFilePath, 'utf8');
+    const users: UserInterface[] = JSON.parse(data);
+
+    const existUser = users.find((user) => userEmail === userEmail);
+
+    if (!existUser) {
+      throw new Error('유저를 찾을 수 없습니다.');
+    }
+
+    const storeIndex = existUser.userRestaurent?.findIndex((place) => place.storeId === storeId);
+    if (!storeIndex) {
+      throw new Error('스토어를 찾을 수 없습니다.');
+    }
+
+    const [deletedStore] = existUser.userRestaurent!.splice(storeIndex, 1);
+    await fs.writeFile(userDataFilePath, JSON.stringify(users, null, 2), 'utf8');
+
+    return deletedStore;
+  } catch (error) {
+    console.error('삭제 실패', error);
+    throw error;
+  }
+}
 
 // 유저 탈퇴하는 함수
 

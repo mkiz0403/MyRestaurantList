@@ -1,5 +1,6 @@
 import axios from 'axios';
 import UserInterface from '../src/models/user.interface';
+import { Restaurant } from '../src/models/user.interface';
 const apiUrl = 'http://127.0.0.1:4000/';
 
 const userRestaurentAxios = axios.create({ baseURL: apiUrl });
@@ -67,5 +68,20 @@ export async function userUpdate(
     return res.data;
   } catch (error) {
     console.error('업데이트 실패', error);
+  }
+}
+
+//유저 스토어 정보
+
+export async function getUserRestaurent(userEmail: string, token: string): Promise<Restaurant[] | undefined> {
+  try {
+    const res = await userRestaurentAxios.get(`/user/${userEmail}/restaurant`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.log('유저의 스토어 정보를 가져올 수 없습니다.');
   }
 }

@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import RestaruantListItem from './RestaruantListItem';
 import { Button } from '@mui/material';
 
 export interface Restaurant {
-  imageUrl: string;
+  storeId: string;
+  imageUrl?: string | undefined;
   foodType: string;
   placeName: string;
-  review: string;
+  review?: string | undefined;
   address: string;
-  visitsCount: number;
+  visitsCount?: number;
 }
 
 interface RestaruantListProps {

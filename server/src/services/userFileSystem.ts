@@ -49,7 +49,7 @@ async function createUser(newUser: UserInterface): Promise<UserInterface | undef
     }
   } catch (error) {
     console.error('회원가입 중 오류가 발생했습니다.', error);
-    throw error; // 추가: 에러를 던져서 호출자가 처리하도록 합니다.
+    throw error;
   }
 }
 
@@ -141,7 +141,16 @@ async function findStorebyId(userEmail: string): Promise<Restaurant[] | undefine
   }
 }
 
-async function getRestaruantData(userEmail: string): Promise<Restaurant[] | undefined> {
+async function getStore(userEmail: string): Promise<Restaurant[] | undefined> {
+  try {
+    const store = await findStorebyId(userEmail);
+    return store;
+  } catch (error) {
+    console.error('스토어 정보를 가져오지 못했습니다.', error);
+  }
+}
+//유저의 맛집 리스트 중 특정 스토어만 가져 오는 함수
+async function getOneStore(userEmail: string): Promise<Restaurant[] | undefined> {
   try {
     const store = await findStorebyId(userEmail);
     return store;
@@ -150,7 +159,7 @@ async function getRestaruantData(userEmail: string): Promise<Restaurant[] | unde
   }
 }
 
-// 유저의 맛집 리스트 아이템을 생성하는 함수
+// 유저의 맛집을 생성하는 함수
 async function createStore(newStore: Restaurant, userEmail: string): Promise<Restaurant | undefined> {
   try {
     const data = await fs.readFile(userDataFilePath, 'utf8');
@@ -173,7 +182,7 @@ async function createStore(newStore: Restaurant, userEmail: string): Promise<Res
   }
 }
 
-// 유저의 맛집 리스트 아이템을 수정하는 함수
+// 유저의 맛집을 수정하는 함수
 async function updateStore(
   userEmail: string,
   storeDate: {
@@ -215,7 +224,7 @@ async function updateStore(
   }
 }
 
-// 유저의 맛집 리스트의 일부를 삭제하는 함수
+// 유저의 맛집 일부를 삭제하는 함수
 async function deleteOneStore(userEmail: string, storeId: string): Promise<Restaurant | undefined> {
   try {
     const data = await fs.readFile(userDataFilePath, 'utf8');
@@ -244,4 +253,4 @@ async function deleteOneStore(userEmail: string, storeId: string): Promise<Resta
 
 // 유저 탈퇴하는 함수
 
-export default { getUser, createUser, userUpdate, getRestaruantData, createStore, updateStore, deleteOneStore };
+export default { getUser, createUser, userUpdate, getStore, createStore, updateStore, deleteOneStore };

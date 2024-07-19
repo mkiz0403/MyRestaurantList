@@ -1,9 +1,10 @@
 import express, { Request, Response } from 'express';
 import userFileSystem from './services/userFileSystem';
 import cors from 'cors';
-import UserInterface from './models/user.Interface';
+import UserInterface, { Restaurant } from './models/user.Interface';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 const port = 4000;
@@ -139,19 +140,19 @@ app.get('/user/:userEmail/restaurant/:storeId', async (req, res) => {
 
 // 스토어 등록하기
 app.post('/user/:userEmail/restaurant', async (req, res) => {
+  const { userEmail } = req.params;
+  const newStore: Restaurant = req.body;
+
   try {
+    const store = await userFileSystem.createItem(newStore, userEmail);
+    res.status(201).json(store);
   } catch (error) {
     console.error('음식점 생성 실패');
+    res.status(500).json({ message: '음식점 생성 중 오류가 발생했습니다.' });
   }
 });
 
 // 스토어 정보 업데이트 하기
-app.put('/user/:userEmail/restaurant/update/:storeId', async (req, res) => {
-  try {
-  } catch (error) {
-    console.error('음식점 업데이트 실패');
-  }
-});
 
 // 스토어 삭제하기
 app.delete('/user/:userEmail/restaurant/:storeId', async (req, res) => {

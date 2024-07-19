@@ -1,5 +1,10 @@
 import './CategoryList.css';
 import CategoryItem from './CategoryItem';
+import { Restaurant } from '../models/user.interface';
+
+interface CategoryListProps {
+  places: Restaurant[];
+}
 
 const categories = [
   { icon: '🍲', title: '한식', count: 0 },
@@ -9,10 +14,15 @@ const categories = [
   { icon: '🍽️', title: '기타', count: 0 },
 ];
 
-function CategoryList() {
+function CategoryList({ places }: CategoryListProps) {
+  const updatedCategories = categories.map((category) => {
+    const count = places.filter((place) => place.foodType === category.title).length;
+    return { ...category, count };
+  });
+
   return (
     <div className="category-list">
-      {categories.map((item, idx) => (
+      {updatedCategories.map((item, idx) => (
         <CategoryItem key={idx} icon={item.icon} title={item.title} count={item.count} />
       ))}
     </div>

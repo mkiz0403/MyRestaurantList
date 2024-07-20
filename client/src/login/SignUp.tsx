@@ -1,7 +1,7 @@
 import { Button, CssBaseline, TextField, FormControl, Grid, Box, Container } from '@mui/material/';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signup } from '../../api/userRestaurantApi';
+import { signup } from '../../api/userStoreApi';
 
 function SignUp() {
   const navigate = useNavigate();

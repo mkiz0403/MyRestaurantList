@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import styled from 'styled-components';
-import { userUpdate } from '../../api/userRestaurantApi';
+import { userUpdate } from '../../api/userStoreApi';
 import UserInterface from '../models/user.interface';
 
 interface UpdateUserInfoProps {

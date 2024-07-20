@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs/promises';
 import bcrypt from 'bcrypt';
 import UserInterface from '../models/user.Interface';
-import { UserStroe } from '../models/user.Interface';
+import { UserStore } from '../models/user.Interface';
 import { v4 as uuidv4 } from 'uuid';
 
 const userDataFilePath = path.join(__dirname, '..', 'data', 'userData.json');
@@ -22,8 +22,7 @@ async function findUserbyId(userEmail: string): Promise<UserInterface | undefine
 // 유저 데이터를 가져오는 함수
 async function getUser(userEmail: string): Promise<UserInterface | undefined> {
   try {
-    const user = await findUserbyId(userEmail);
-    return user;
+    return await findUserbyId(userEmail);
   } catch (error) {
     console.error('정보를 가져오지 못했습니다.', error);
   }
@@ -125,14 +124,9 @@ async function userUpdate(
 
 // 유저의 맛집 리스트를 불러오는 함수
 
-async function findStorebyId(userEmail: string): Promise<UserStroe[] | undefined> {
+async function findStorebyId(userEmail: string): Promise<UserStore[] | undefined> {
   try {
-    const data = await fs.readFile(userDataFilePath, 'utf8');
-    console.log(userDataFilePath);
-    const users: UserInterface[] = JSON.parse(data);
-
-    const user = users.find((user) => user.userEmail === userEmail);
-
+    const user = await findUserbyId(userEmail);
     if (user && user.userStore) {
       return user.userStore;
     }
@@ -141,46 +135,38 @@ async function findStorebyId(userEmail: string): Promise<UserStroe[] | undefined
   }
 }
 
-async function getStore(userEmail: string): Promise<UserStroe[] | undefined> {
+async function getStore(userEmail: string): Promise<UserStore[] | undefined> {
   try {
-    const store = await findStorebyId(userEmail);
-    return store;
+    return await findStorebyId(userEmail);
   } catch (error) {
     console.error('스토어 정보를 가져오지 못했습니다.', error);
   }
 }
 //유저의 맛집 리스트 중 특정 스토어만 가져 오는 함수
-async function getOneStore(userEmail: string, storeId: string): Promise<UserStroe | undefined> {
+async function getOneStore(userEmail: string, storeId: string): Promise<UserStore | undefined> {
   try {
     const store = await findStorebyId(userEmail);
-    if (!store) {
-      throw new Error('유저의 맛집 리스트를 찾을 수 없습니다.');
-    }
-
-    const oneStore = store.find((place) => place.storeId === storeId);
-
-    if (!oneStore) {
-      throw Error('일치하는 스토어가 없습니다.');
-    }
-
-    return oneStore;
+    return store?.find((place) => place.storeId === storeId);
   } catch (error) {
     console.error('스토어 정보를 가져오지 못했습니다.', error);
   }
 }
 
 // 유저의 맛집을 생성하는 함수
-async function createStore(newStore: UserStroe, userEmail: string): Promise<UserStroe | undefined> {
+async function createStore(newStore: UserStore, userEmail: string): Promise<UserStore | undefined> {
   try {
-    const stores = await findStorebyId(userEmail);
-    if (!stores) {
+    const data = await fs.readFile(userDataFilePath, 'utf8');
+    const users: UserInterface[] = JSON.parse(data);
+
+    const existUser = users.find((user) => user.userEmail === userEmail);
+    if (!existUser) {
       throw new Error('유저를 찾을 수 없습니다.');
     }
 
     newStore.storeId = uuidv4();
 
-    stores.push(newStore);
-    await fs.writeFile(userDataFilePath, JSON.stringify(stores, null, 2), 'utf8');
+    existUser.userStore = existUser.userStore ? [...existUser.userStore, newStore] : [newStore];
+    await fs.writeFile(userDataFilePath, JSON.stringify(users, null, 2), 'utf8');
 
     return newStore;
   } catch (error) {
@@ -201,14 +187,17 @@ async function updateStore(
     review?: string;
     visitsCount?: number;
   },
-): Promise<UserStroe | undefined> {
+): Promise<UserInterface | undefined> {
   try {
-    const stores = await findStorebyId(userEmail);
-    if (!stores) {
+    const data = await fs.readFile(userDataFilePath, 'utf8');
+    const users: UserInterface[] = JSON.parse(data);
+
+    const existUser = users.find((user) => user.userEmail === userEmail);
+    if (!existUser) {
       throw new Error('유저를 찾을 수 없습니다.');
     }
 
-    const store = stores.find((place) => place.storeId === storeDate.storeId);
+    const store = existUser.userStore?.find((place) => place.storeId === storeDate.storeId);
     if (!store) {
       throw new Error('일치하는 맛집이 없습니다.');
     }
@@ -220,8 +209,8 @@ async function updateStore(
     if (storeDate.review) store.review = storeDate.review;
     if (storeDate.visitsCount !== undefined) store.visitsCount = storeDate.visitsCount;
 
-    await fs.writeFile(userDataFilePath, JSON.stringify(store, null, 2), 'utf8');
-    return store;
+    await fs.writeFile(userDataFilePath, JSON.stringify(users, null, 2), 'utf8');
+    return existUser;
   } catch (error) {
     console.error('업데이트에 실패했습니다.', error);
     return undefined;
@@ -229,21 +218,24 @@ async function updateStore(
 }
 
 // 유저의 맛집 일부를 삭제하는 함수
-async function deleteOneStore(userEmail: string, storeId: string): Promise<UserStroe | undefined> {
+async function deleteOneStore(userEmail: string, storeId: string): Promise<UserStore | undefined> {
   try {
-    const stores = await findStorebyId(userEmail);
+    const data = await fs.readFile(userDataFilePath, 'utf8');
+    const users: UserInterface[] = JSON.parse(data);
 
-    if (!stores) {
+    const existUser = users.find((user) => userEmail === userEmail);
+
+    if (!existUser) {
       throw new Error('유저를 찾을 수 없습니다.');
     }
 
-    const storeIndex = stores?.findIndex((place) => place.storeId === storeId);
+    const storeIndex = existUser.userStore?.findIndex((place) => place.storeId === storeId);
     if (!storeIndex) {
       throw new Error('스토어를 찾을 수 없습니다.');
     }
 
-    const [deletedStore] = stores.splice(storeIndex, 1);
-    await fs.writeFile(userDataFilePath, JSON.stringify(stores, null, 2), 'utf8');
+    const [deletedStore] = existUser.userStore!.splice(storeIndex, 1);
+    await fs.writeFile(userDataFilePath, JSON.stringify(users, null, 2), 'utf8');
 
     return deletedStore;
   } catch (error) {

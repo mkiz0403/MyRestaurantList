@@ -3,7 +3,6 @@ import { useState, ChangeEvent } from 'react';
 import testImage from '../../public/testImage.png';
 import cameraImage from '../../public/pngwing.com.png';
 import CategoryList from './CategoryList';
-import {} from '../../api/userRestaurantApi';
 import UserInterface from '../models/user.interface';
 import { UserStore } from '../models/user.interface';
 
@@ -17,15 +16,7 @@ interface UserInfoProps {
   places: UserStore[];
 }
 
-function UserInfo({
-  places,
-  userEmail,
-  userType,
-  userNickName,
-  userImg,
-  onUpdateUserInfo,
-  onUserLogOut,
-}: UserInfoProps) {
+function UserInfo({ places, userType, userNickName, onUpdateUserInfo, onUserLogOut }: UserInfoProps) {
   const [userProfile, setUserProfile] = useState<string>(testImage);
   const [previewImage, setPreviewImage] = useState<string>(userProfile);
   const [userData, setUserData] = useState<UserInterface | undefined>(undefined);

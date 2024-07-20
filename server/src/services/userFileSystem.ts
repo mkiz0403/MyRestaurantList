@@ -167,6 +167,7 @@ async function createStore(newStore: UserStore, userEmail: string): Promise<User
 
     existUser.userStore = existUser.userStore ? [...existUser.userStore, newStore] : [newStore];
     await fs.writeFile(userDataFilePath, JSON.stringify(users, null, 2), 'utf8');
+    console.log('스토어 생성 완료!');
 
     return newStore;
   } catch (error) {
@@ -223,14 +224,14 @@ async function deleteOneStore(userEmail: string, storeId: string): Promise<UserS
     const data = await fs.readFile(userDataFilePath, 'utf8');
     const users: UserInterface[] = JSON.parse(data);
 
-    const existUser = users.find((user) => userEmail === userEmail);
+    const existUser = users.find((user) => user.userEmail === userEmail);
 
     if (!existUser) {
       throw new Error('유저를 찾을 수 없습니다.');
     }
 
     const storeIndex = existUser.userStore?.findIndex((place) => place.storeId === storeId);
-    if (!storeIndex) {
+    if (storeIndex === undefined || storeIndex === -1) {
       throw new Error('스토어를 찾을 수 없습니다.');
     }
 

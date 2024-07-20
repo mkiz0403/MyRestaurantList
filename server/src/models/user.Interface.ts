@@ -6,10 +6,10 @@ export default interface UserInterface {
   confirmNewPassword: string;
   password: string;
   userImg?: string;
-  userStore?: UserStroe[];
+  userStore?: UserStore[];
 }
 
-export interface UserStroe {
+export interface UserStore {
   storeId: string;
   placeName: string;
   foodType: string;

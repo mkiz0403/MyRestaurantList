@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Link as RouterLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import RestorauntMapImage from '../../public/RestorauntMapImage.webp';
-import { login } from '../../api/userRestaurantApi';
+import { login } from '../../api/userStoreApi';
 import UserInterface from '../models/user.interface';
 
 function LoginPage() {
@@ -133,7 +133,6 @@ const Titel = styled.h1`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-
 `;
 
 const FormFiled = styled.div`

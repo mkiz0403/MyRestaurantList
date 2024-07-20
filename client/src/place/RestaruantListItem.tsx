@@ -6,12 +6,12 @@ import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import RestaurantsItem from './RestaurantsItem';
-import { Restaurant } from '../models/user.interface';
+import { UserStore } from '../models/user.interface';
 
 interface RestaruantListItemProps {
   icon: string;
   title: string;
-  places: Restaurant[];
+  places: UserStore[];
   onSelectAddress: (address: string) => void;
   isOpen: boolean;
   onClick: () => void;

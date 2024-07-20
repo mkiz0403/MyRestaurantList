@@ -5,7 +5,7 @@ import cameraImage from '../../public/pngwing.com.png';
 import CategoryList from './CategoryList';
 import {} from '../../api/userRestaurantApi';
 import UserInterface from '../models/user.interface';
-import { Restaurant } from '../models/user.interface';
+import { UserStore } from '../models/user.interface';
 
 interface UserInfoProps {
   userEmail?: string;
@@ -14,7 +14,7 @@ interface UserInfoProps {
   userType: string | undefined;
   onUpdateUserInfo: () => void;
   onUserLogOut: (e: React.FormEvent) => Promise<void>;
-  places: Restaurant[];
+  places: UserStore[];
 }
 
 function UserInfo({

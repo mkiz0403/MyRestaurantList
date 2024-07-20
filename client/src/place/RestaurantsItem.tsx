@@ -3,10 +3,10 @@ import { Card, CardHeader, CardActions, IconButton, Collapse, CardContent, CardM
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Restaurant } from '../models/user.interface';
+import { UserStore } from '../models/user.interface';
 
 interface RestaurantsInfoProps {
-  places: Restaurant[];
+  places: UserStore[];
   onSelectAddress: (address: string) => void;
   category: string;
 }

@@ -1,9 +1,9 @@
 import './CategoryList.css';
 import CategoryItem from './CategoryItem';
-import { Restaurant } from '../models/user.interface';
+import { UserStore } from '../models/user.interface';
 
 interface CategoryListProps {
-  places: Restaurant[];
+  places: UserStore[];
 }
 
 const categories = [

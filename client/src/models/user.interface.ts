@@ -1,20 +1,20 @@
 export default interface UserInterface {
   userNickName: string;
   userEmail: string;
-  password?: string;
-  userImg?: string;
   userType: string;
-  newPassword?: string;
-  confirmNewPassword?: string;
-  userRestaurent?: Restaurant[];
+  newPassword: string;
+  confirmNewPassword: string;
+  password: string;
+  userImg?: string;
+  userStore?: UserStore[];
 }
 
-export interface Restaurant {
+export interface UserStore {
   storeId: string;
-  imageUrl?: string | undefined;
-  foodType: string;
   placeName: string;
-  review?: string | undefined;
+  foodType: string;
   address: string;
+  imageUrl?: string | undefined;
+  review?: string | undefined;
   visitsCount?: number | undefined;
 }

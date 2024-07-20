@@ -1,6 +1,6 @@
 import axios from 'axios';
 import UserInterface from '../src/models/user.interface';
-import { Restaurant } from '../src/models/user.interface';
+import { UserStore } from '../src/models/user.interface';
 const apiUrl = 'http://127.0.0.1:4000/';
 
 const userRestaurentAxios = axios.create({ baseURL: apiUrl });
@@ -73,7 +73,7 @@ export async function userUpdate(
 
 //유저 스토어 정보
 
-export async function getUserRestaurent(userEmail: string, token: string): Promise<Restaurant[] | undefined> {
+export async function getUserRestaurent(userEmail: string, token: string): Promise<UserStore[] | undefined> {
   try {
     const res = await userRestaurentAxios.get(`/user/${userEmail}/restaurant`, {
       headers: {

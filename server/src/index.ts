@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import userFileSystem from './services/userFileSystem';
 import cors from 'cors';
-import UserInterface, { UserStroe } from './models/user.Interface';
+import UserInterface, { UserStore } from './models/user.Interface';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -113,7 +113,7 @@ app.put('/user/update/:userEmail', async (req, res) => {
 });
 
 // 유저의 스토어 정보 불러오기
-app.get('/user/:userEmail/restaurnet', async (req, res) => {
+app.get('/user/:userEmail/store', async (req, res) => {
   const { userEmail } = req.params;
 
   try {
@@ -130,20 +130,29 @@ app.get('/user/:userEmail/restaurnet', async (req, res) => {
 });
 
 // 특정 스토어 정보 불러오기
-app.get('/user/:userEmail/restaurant/:storeId', async (req, res) => {
+app.get('/user/:userEmail/store/:storeId', async (req, res) => {
+  const { userEmail, storeId } = req.params;
+
   try {
+    const oneStore = await userFileSystem.getOneStore(userEmail, storeId);
+    if (oneStore) {
+      res.status(200).json(oneStore);
+    } else {
+      res.status(404).json({ message: '유저의 스토어 정보를 찾을 수 없습니다' });
+    }
   } catch (error) {
     console.error('일치하는 음식점이 없습니다.');
   }
 });
 
 // 스토어 등록하기
-app.post('/user/:userEmail/restaurant', async (req, res) => {
+app.post('/user/:userEmail/store', async (req, res) => {
   const { userEmail } = req.params;
-  const newStore: UserStroe = req.body;
+  const newStore: UserStore = req.body;
 
   try {
     const store = await userFileSystem.createStore(newStore, userEmail);
+    console.log('음식점 생성 성공!');
     res.status(201).json(store);
   } catch (error) {
     console.error('음식점 생성 실패');
@@ -152,7 +161,7 @@ app.post('/user/:userEmail/restaurant', async (req, res) => {
 });
 
 // 스토어 정보 업데이트 하기
-app.put('/user/:userEmail/restaurant/update/:storeId', async (req, res) => {
+app.put('/user/:userEmail/store/update/:storeId', async (req, res) => {
   const { placeName, address, imageUrl, review, visitsCount, foodType } = req.body;
   const userEmail = req.params.userEmail;
   const storeId = req.params.storeId;
@@ -179,7 +188,7 @@ app.put('/user/:userEmail/restaurant/update/:storeId', async (req, res) => {
 });
 
 // 스토어 삭제하기
-app.delete('/user/:userEmail/restaurant/:storeId', async (req, res) => {
+app.delete('/user/:userEmail/store/:storeId', async (req, res) => {
   const { userEmail, storeId } = req.params;
 
   try {

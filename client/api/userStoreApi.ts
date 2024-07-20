@@ -39,7 +39,7 @@ export async function signup(
 
 export async function getUser(userEmail: string, token: string): Promise<UserInterface | undefined> {
   try {
-    const res = await userRestaurentAxios.get(`/user/${encodeURIComponent(userEmail)}`, {
+    const res = await userRestaurentAxios.get(`/user/${userEmail}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -59,7 +59,7 @@ export async function userUpdate(
   userImg?: string,
 ): Promise<UserInterface | undefined> {
   try {
-    const res = await userRestaurentAxios.put(`/user/update/${encodeURIComponent(userEmail)}`, {
+    const res = await userRestaurentAxios.put(`/user/update/${userEmail}`, {
       password,
       newPassword,
       confirmNewPassword,
@@ -76,7 +76,7 @@ export async function userUpdate(
 
 export async function getUserStore(userEmail: string, token: string): Promise<UserStore[] | undefined> {
   try {
-    const res = await userRestaurentAxios.get(`/user/${encodeURIComponent(userEmail)}/store`, {
+    const res = await userRestaurentAxios.get(`/user/${userEmail}/store`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -95,7 +95,7 @@ export async function getOneUserStore(
   token: string,
 ): Promise<UserStore[] | undefined> {
   try {
-    const res = await userRestaurentAxios.get(`/user/${encodeURIComponent(userEmail)}/store/${storeId}`, {
+    const res = await userRestaurentAxios.get(`/user/${userEmail}/store/${storeId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -120,7 +120,7 @@ export async function createStore(
 ): Promise<UserStore | undefined> {
   try {
     const res = await userRestaurentAxios.post(
-      `/user/${encodeURIComponent(userEmail)}/store`,
+      `/user/${userEmail}/store`,
       {
         placeName,
         foodType,
@@ -157,7 +157,7 @@ export async function updateStore(
 ): Promise<UserStore | undefined> {
   try {
     const res = await userRestaurentAxios.put(
-      `/user/${encodeURIComponent(userEmail)}/store/update/${storeId}`,
+      `/user/${userEmail}/store/update/${storeId}`,
       {
         placeName,
         foodType,
@@ -185,7 +185,7 @@ export async function deleteOneStore(
   token: string,
 ): Promise<UserStore | undefined> {
   try {
-    const res = await userRestaurentAxios.delete(`/user/${encodeURIComponent(userEmail)}/store/${storeId}`, {
+    const res = await userRestaurentAxios.delete(`/user/${userEmail}/store/${storeId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

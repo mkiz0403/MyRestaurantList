@@ -186,7 +186,7 @@ async function updateStore(
     address: string;
     imageUrl?: string;
     review?: string;
-    visitsCount?: number;
+    visitedDate?: string;
   },
 ): Promise<UserInterface | undefined> {
   try {
@@ -208,7 +208,7 @@ async function updateStore(
     store.foodType = storeDate.foodType;
     if (storeDate.imageUrl) store.imageUrl = storeDate.imageUrl;
     if (storeDate.review) store.review = storeDate.review;
-    if (storeDate.visitsCount !== undefined) store.visitsCount = storeDate.visitsCount;
+    if (storeDate.visitedDate !== undefined) store.visitedDate = storeDate.visitedDate;
 
     await fs.writeFile(userDataFilePath, JSON.stringify(users, null, 2), 'utf8');
     return existUser;
@@ -245,6 +245,20 @@ async function deleteOneStore(userEmail: string, storeId: string): Promise<UserS
   }
 }
 
+async function visitedStore(userEmail: string, storeId: string, visitedDate: string): Promise<UserStore | undefined> {
+  try {
+    const data = await fs.readFile(userDataFilePath, 'utf8');
+    const users: UserInterface[] = JSON.parse(data);
+
+    const existUser = users.find((user) => user.userEmail === userEmail);
+
+    if (!existUser) {
+      throw new Error('유저를 찾을 수 없습니다.');
+    }
+  } catch (error) {
+    console.log('방문 체크에 실패 했습니다.');
+  }
+}
 // 유저 탈퇴하는 함수
 
 export default { getUser, createUser, userUpdate, getStore, getOneStore, createStore, updateStore, deleteOneStore };

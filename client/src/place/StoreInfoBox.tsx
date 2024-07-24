@@ -11,13 +11,15 @@ export interface Stores {
   placeName: string;
   review?: string | undefined;
   address: string;
-  visitsCount?: number;
+  visitedDate?: string | undefined;
+  lastVisit: string;
 }
 
 interface StoresListProps {
   places: Stores[];
   onSelectAddress: (address: string) => void;
   onOpenCreateStore: () => void;
+  checkVisitedStore: (storeId: string, visitDate: string) => void;
 }
 
 const categories = [
@@ -28,7 +30,7 @@ const categories = [
   { icon: '🍽️', title: '기타' },
 ];
 
-function StoreInfoBox({ places, onSelectAddress, onOpenCreateStore }: StoresListProps) {
+function StoreInfoBox({ places, onSelectAddress, onOpenCreateStore, checkVisitedStore }: StoresListProps) {
   const [openCategoryIndex, setOpenCategoryIndex] = useState<number | null>(null);
 
   function handleCategoryClick(index: number) {
@@ -99,6 +101,7 @@ function StoreInfoBox({ places, onSelectAddress, onOpenCreateStore }: StoresList
               onSelectAddress={onSelectAddress}
               isOpen={openCategoryIndex === idx}
               onClick={() => handleCategoryClick(idx)}
+              checkVisitedStore={checkVisitedStore}
             />
           );
         })}

@@ -16,5 +16,5 @@ export interface UserStore {
   address: string;
   imageUrl?: string;
   review?: string;
-  visitsCount?: number;
+  visitedDate?: string;
 }

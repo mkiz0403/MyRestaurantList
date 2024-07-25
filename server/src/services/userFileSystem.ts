@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs/promises';
 import bcrypt from 'bcrypt';
+import multer from 'multer';
 import UserInterface from '../models/user.Interface';
 import { UserStore } from '../models/user.Interface';
 import { v4 as uuidv4 } from 'uuid';
@@ -51,6 +52,23 @@ async function createUser(newUser: UserInterface): Promise<UserInterface | undef
     throw error;
   }
 }
+
+// 유저 이미지 저장
+
+const userImgUrl = '/Users/jeontaejeong/Documents/Coding/Project/MyRestaurantList/server/src/data/userImg';
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, userImgUrl);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({
+  storage: storage,
+});
 
 // 기존 유저 정보를 업데이트 하는 함수
 
@@ -186,7 +204,7 @@ async function updateStore(
     address: string;
     imageUrl?: string;
     review?: string;
-    visitedDate?: string;
+    visitedDate?: string[];
   },
 ): Promise<UserInterface | undefined> {
   try {
@@ -245,20 +263,16 @@ async function deleteOneStore(userEmail: string, storeId: string): Promise<UserS
   }
 }
 
-async function visitedStore(userEmail: string, storeId: string, visitedDate: string): Promise<UserStore | undefined> {
-  try {
-    const data = await fs.readFile(userDataFilePath, 'utf8');
-    const users: UserInterface[] = JSON.parse(data);
-
-    const existUser = users.find((user) => user.userEmail === userEmail);
-
-    if (!existUser) {
-      throw new Error('유저를 찾을 수 없습니다.');
-    }
-  } catch (error) {
-    console.log('방문 체크에 실패 했습니다.');
-  }
-}
 // 유저 탈퇴하는 함수
 
-export default { getUser, createUser, userUpdate, getStore, getOneStore, createStore, updateStore, deleteOneStore };
+export default {
+  getUser,
+  createUser,
+  userUpdate,
+  getStore,
+  getOneStore,
+  createStore,
+  updateStore,
+  deleteOneStore,
+  upload,
+};

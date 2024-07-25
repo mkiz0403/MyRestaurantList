@@ -93,7 +93,7 @@ export async function getOneUserStore(
   userEmail: string,
   storeId: string,
   token: string,
-): Promise<UserStore[] | undefined> {
+): Promise<UserStore | undefined> {
   try {
     const res = await userRestaurentAxios.get(`/user/${userEmail}/store/${storeId}`, {
       headers: {
@@ -115,7 +115,7 @@ export async function createStore(
   address: string,
   imageUrl: string,
   review: string,
-  visitsCount: number,
+  visitedDate: string[],
   token: string,
 ): Promise<UserStore | undefined> {
   try {
@@ -127,7 +127,7 @@ export async function createStore(
         address,
         imageUrl,
         review,
-        visitsCount,
+        visitedDate,
       },
       {
         headers: {
@@ -151,9 +151,9 @@ export async function updateStore(
   placeName: string,
   foodType: string,
   address: string,
-  imageUrl: string,
-  review: string,
-  visitsCount: number,
+  imageUrl?: string,
+  review?: string,
+  visitedDate?: string[],
 ): Promise<UserStore | undefined> {
   try {
     const res = await userRestaurentAxios.put(
@@ -164,7 +164,7 @@ export async function updateStore(
         address,
         imageUrl,
         review,
-        visitsCount,
+        visitedDate,
       },
       {
         headers: {

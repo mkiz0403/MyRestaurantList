@@ -14,12 +14,12 @@ function CreateStore({ onClose, userEmail, token }: CreateStoreProps) {
   const [address, setAddress] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [review, setReview] = useState('');
-  const [visitsCount, setVisitsCount] = useState<number>(0);
+  const [visitedDate, setVisitedDate] = useState([]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      const store = await createStore(userEmail, placeName, foodType, address, imageUrl, review, visitsCount, token);
+      const store = await createStore(userEmail, placeName, foodType, address, imageUrl, review, visitedDate, token);
       // 호출할때 인수를 순서대로 넣어주자!!!!!!!!!!!!
       alert('스토어 생성 성공!');
       onClose();
@@ -140,37 +140,22 @@ const InputBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  width: 80%;
 `;
 
 const Input = styled.input`
-  width: 250px;
+  width: 100%;
   height: 20px;
   border: 1px solid #007bff;
   border-radius: 5px;
   font-size: 24px;
-  padding: 16px;
-  margin: 5px 0 5px 0;
+  padding: 16px 0;
+  margin: 10px 0 10px 0;
 `;
 
 const Label = styled.div`
   color: #007bff;
   font-size: 20px;
-`;
-
-const TextBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-right: 10px;
-  width: 100%;
-`;
-
-const Text = styled.h2`
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-  color: #007bff;
-  margin-left: 10px;
 `;
 
 const ButtonBox = styled.div`

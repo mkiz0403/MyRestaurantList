@@ -9,7 +9,7 @@ import UpdateUserInfo from './user/UpdataUserInfo';
 // import Category from './user/Category';
 import UserInterface from './models/user.interface';
 import { UserStore } from './models/user.interface';
-import { getUser, getUserStore } from '../api/userStoreApi';
+import { getUser, getUserStore, updateStore } from '../api/userStoreApi';
 
 function Home() {
   const navigate = useNavigate();
@@ -45,6 +45,33 @@ function Home() {
     setUserInfo(updatedUser);
   }
 
+  async function checkVisitedCount(storeId: string, visitedDate: string) {
+    const updatedPlaces = places.map((place) =>
+      place.storeId === storeId
+        ? {
+            ...place,
+            visitedDate: place.visitedDate ? [...place.visitedDate, visitedDate] : [visitedDate],
+          }
+        : place,
+    );
+    setPlaces(updatedPlaces);
+
+    const placeToUpdate = updatedPlaces.find((place) => place.storeId === storeId);
+    if (placeToUpdate && userInfo && token) {
+      await updateStore(
+        storeId,
+        userInfo.userEmail,
+        token,
+        placeToUpdate.placeName,
+        placeToUpdate.foodType,
+        placeToUpdate.address,
+        placeToUpdate.imageUrl,
+        placeToUpdate.review,
+        placeToUpdate.visitedDate,
+      );
+    }
+  }
+
   async function handleLogout(e: React.FormEvent) {
     e.preventDefault();
     try {
@@ -69,10 +96,10 @@ function Home() {
           setUserInfo(user);
         }
 
-        const restaurents = await getUserStore(userEmail, token);
+        const stores = await getUserStore(userEmail, token);
 
-        if (restaurents) {
-          setPlaces(restaurents);
+        if (stores) {
+          setPlaces(stores);
         }
       } else {
         navigate('/login');
@@ -99,9 +126,19 @@ function Home() {
             onUserLogOut={handleLogout}
             places={places}
           />
-          <StoreInfoBox places={places} onSelectAddress={setSelectedAddress} onOpenCreateStore={handleOpenCreate} />
+          <StoreInfoBox
+            places={places}
+            onSelectAddress={setSelectedAddress}
+            onOpenCreateStore={handleOpenCreate}
+            checkVisitedStore={checkVisitedCount}
+          />
         </div>
-        <StoresMap places={places} selectedAddress={selectedAddress} />
+        <StoresMap
+          places={places}
+          selectedAddress={selectedAddress}
+          userEmail={userInfo?.userEmail || ''}
+          token={token || ''}
+        />
         {isCreateStore && userInfo && token && (
           <CreateStore onClose={handleCloseCreate} userEmail={userInfo.userEmail} token={token} />
         )}

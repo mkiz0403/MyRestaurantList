@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import RestorauntMapImage from '../../public/RestorauntMapImage.webp';
 import { login } from '../../api/userStoreApi';
-import UserInterface from '../models/user.interface';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -51,7 +50,7 @@ function LoginPage() {
           localStorage.removeItem('userId');
           localStorage.removeItem('password');
         }
-        navigate(`/${userEmail}`);
+        navigate(`/user/${userEmail}`);
         console.log(saveLoginInfo);
       }
     } catch (error) {

@@ -20,7 +20,8 @@ const Store = ({ places, onSelectAddress, category, checkVisitedStore }: StoreIn
   };
 
   const handleFavoriteClick = (storeId: string) => {
-    const visitDate = new Date().toISOString();
+    const date = new Date();
+    const visitDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split('T')[0];
     checkVisitedStore(storeId, visitDate);
   };
 
@@ -30,7 +31,18 @@ const Store = ({ places, onSelectAddress, category, checkVisitedStore }: StoreIn
         .filter((store) => store.foodType === category)
         .map((store, idx) => (
           <Card sx={{ marginLeft: '10px', paddingLeft: '20px', maxWidth: 345, marginBottom: 2 }} key={idx}>
-            <CardHeader title={store.placeName} subheader={`최근방문일 : ${store.lastVisit || '없음'}`} />
+            <CardHeader title={store.placeName} />
+            <CardContent>
+              <Typography variant="body2" color="text.secondary">
+                총 방문 횟수: {store.visitedDate?.length || 0}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                최근 방문일:{' '}
+                {store.visitedDate && store.visitedDate.length > 0
+                  ? store.visitedDate[store.visitedDate.length - 1]
+                  : '없음'}
+              </Typography>
+            </CardContent>
             <CardActions disableSpacing sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <IconButton aria-label="add to favorites" onClick={() => handleFavoriteClick(store.storeId)}>
                 <FavoriteIcon />
@@ -63,7 +75,12 @@ const Store = ({ places, onSelectAddress, category, checkVisitedStore }: StoreIn
                   </span>
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  <strong>방문 횟수:</strong> {store.visitedDate}회
+                  <strong>방문일:</strong>
+                  <ol>
+                    {store.visitedDate
+                      ?.sort((a, b) => (a > b ? -1 : 1))
+                      .map((date, index) => <li key={index}>{date}</li>)}
+                  </ol>{' '}
                 </Typography>
               </CardContent>
             </Collapse>

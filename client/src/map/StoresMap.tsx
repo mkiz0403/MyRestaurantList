@@ -10,7 +10,7 @@ declare global {
   interface Window {
     naver: any;
     copyToClipboard: any;
-    // handleSearch: any;
+    closeInfoWindow: () => void;
   }
 }
 
@@ -74,6 +74,10 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
 
           map.setCursor('pointer');
 
+          window.closeInfoWindow = () => {
+            infoWindowRef.current.close();
+          };
+
           function searchCoordinateToAddress(latlng: any) {
             if (infoWindowRef.current) {
               infoWindowRef.current.close();
@@ -105,9 +109,9 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
                   `<div style="padding:10px;min-width:200px;line-height:150%;">
                     <h4 style="margin-top:5px;">검색 좌표</h4><button onclick="setAddressToRegister('${address}')"> 맛집 등록 하기</button><br />
                     ${htmlAddresses.join('<br />')}
+                    <button onclick="closeInfoWindow()">닫기</button>
                   </div>`,
                 );
-
                 infoWindowRef.current.open(map, latlng);
               },
             );

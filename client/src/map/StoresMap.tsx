@@ -2,7 +2,9 @@ import $ from 'jquery';
 import './StoresMap.css';
 import { useEffect, useRef } from 'react';
 import { UserStore } from '../models/user.interface';
-// import CreateRestaurant from '../place/CreateRestaurant';
+import SearchStore from '../Roulette/SearchStore';
+import RouletteButton from '../Roulette/RouletteButton';
+import { getOneUserStore } from '../../api/userStoreApi';
 
 declare global {
   interface Window {
@@ -15,9 +17,11 @@ declare global {
 interface MapProps {
   places: UserStore[];
   selectedAddress: string | null;
+  userEmail: string;
+  token: string;
 }
 
-const StoresMap = ({ places, selectedAddress }: MapProps) => {
+const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
   const mapRef = useRef<any>(null);
   const infoWindowRef = useRef<any>(null);
   const mapInstance = useRef<any>(null);
@@ -34,12 +38,6 @@ const StoresMap = ({ places, selectedAddress }: MapProps) => {
         },
       );
     };
-
-    // window.handleSearch = (e: React.FormEvent) => {
-    //   e.preventDefault();
-    //   const address: any = (document.getElementById('address') as HTMLInputElement).value;
-    //   searchAddressToCoordinate(address);
-    // };
 
     const { naver } = window;
 
@@ -358,7 +356,7 @@ const StoresMap = ({ places, selectedAddress }: MapProps) => {
     initMap();
   }, [places, selectedAddress]);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearchAddress = (e: React.FormEvent) => {
     e.preventDefault();
     const address: any = (document.getElementById('address') as HTMLInputElement).value;
     searchAddressToCoordinate(address);
@@ -376,11 +374,6 @@ const StoresMap = ({ places, selectedAddress }: MapProps) => {
     const { naver } = window;
 
     if (!naver) return;
-
-    // const infoWindow = new naver.maps.InfoWindow({
-    //   anchorSkew: true,
-    // });
-    // infoWindowRef.current = infoWindow;
 
     naver.maps.Service.geocode(
       {
@@ -433,6 +426,69 @@ const StoresMap = ({ places, selectedAddress }: MapProps) => {
     );
   };
 
+  const handleSearchStore = async (searchTerm: string) => {
+    try {
+      if (!userEmail || !token) {
+        alert('사용자 정보가 없습니다. 다시 로그인해주세요.');
+        return;
+      }
+
+      const store = await getOneUserStore(userEmail, searchTerm, token);
+
+      if (store) {
+        const { address, placeName, review } = store;
+        const { naver } = window;
+
+        naver.maps.Service.geocode(
+          {
+            query: address,
+          },
+          function (status: any, response: any) {
+            if (status !== naver.maps.Service.Status.OK) {
+              return alert('주소를 찾을 수 없습니다.');
+            }
+
+            const result = response.v2.addresses[0];
+            const latlng = new naver.maps.LatLng(result.y, result.x);
+
+            if (mapInstance.current) {
+              mapInstance.current.setCenter(latlng);
+              const marker = new naver.maps.Marker({
+                position: latlng,
+                map: mapInstance.current,
+              });
+
+              const infoWindow = new naver.maps.InfoWindow({
+                content: `
+                  <div style="padding:10px;min-width:200px;">
+                    <h4>${placeName}</h4>
+                    <p>${address}</p>
+                    <p>${review || '리뷰 없음'}</p>
+                  </div>
+                `,
+              });
+
+              naver.maps.Event.addListener(marker, 'click', () => {
+                if (infoWindow.getMap()) {
+                  infoWindow.close();
+                } else {
+                  infoWindow.open(mapInstance.current, marker);
+                }
+              });
+
+              infoWindow.open(mapInstance.current, marker);
+            }
+          },
+        );
+      } else {
+        alert('검색된 음식점 정보가 없습니다.');
+      }
+    } catch (error) {
+      console.error('음식점 검색 오류:', error);
+      alert('음식점을 검색하는 중 오류가 발생했습니다.');
+    }
+  };
+
   return (
     <>
       <div
@@ -459,8 +515,10 @@ const StoresMap = ({ places, selectedAddress }: MapProps) => {
           }}
         >
           <input id="address" type="text" placeholder="주소 검색" />
-          <button onClick={handleSearch}>검색</button>
+          <button onClick={handleSearchAddress}>검색</button>
         </div>
+        <SearchStore onSearch={handleSearchStore} />
+        <RouletteButton />
       </div>
     </>
   );

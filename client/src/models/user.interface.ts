@@ -10,12 +10,12 @@ export default interface UserInterface {
 }
 
 export interface UserStore {
-  lastVisit: string;
   storeId: string;
   placeName: string;
   foodType: string;
   address: string;
   imageUrl?: string | undefined;
   review?: string | undefined;
-  visitedDate?: string | undefined;
+  visitedDate?: string[];
+  location?: { latitude: number; longitude: number };
 }

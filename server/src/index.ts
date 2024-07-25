@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import userFileSystem from './services/userFileSystem';
 import cors from 'cors';
-import UserInterface, { UserStore } from './models/user.Interface';
+import { UserStore } from './models/user.Interface';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -89,8 +89,11 @@ app.get('/user/:userEmail', async (req, res) => {
 
 // 유저 업데이트
 app.put('/user/update/:userEmail', async (req, res) => {
-  const { password, userNickName, userImg, newPassword, confirmNewPassword } = req.body;
+  const { password, userNickName, newPassword, confirmNewPassword } = req.body;
   const userEmail = req.params.userEmail;
+  const userImg = req.file
+    ? `/Users/jeontaejeong/Documents/Coding/Project/MyRestaurantList/server/src/data/userImg/${req.file.filename}`
+    : undefined;
 
   try {
     const updatedUser = await userFileSystem.userUpdate(userEmail, {
@@ -162,7 +165,7 @@ app.post('/user/:userEmail/store', async (req, res) => {
 
 // 스토어 정보 업데이트 하기
 app.put('/user/:userEmail/store/update/:storeId', async (req, res) => {
-  const { placeName, address, imageUrl, review, visitsCount, foodType } = req.body;
+  const { placeName, address, imageUrl, review, visitedDate, foodType } = req.body;
   const userEmail = req.params.userEmail;
   const storeId = req.params.storeId;
 
@@ -173,7 +176,7 @@ app.put('/user/:userEmail/store/update/:storeId', async (req, res) => {
       address,
       imageUrl,
       review,
-      visitsCount,
+      visitedDate,
       foodType,
     });
 

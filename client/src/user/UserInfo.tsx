@@ -19,13 +19,14 @@ interface UserInfoProps {
 function UserInfo({ places, userType, userNickName, onUpdateUserInfo, onUserLogOut }: UserInfoProps) {
   const [userProfile, setUserProfile] = useState<string>(testImage);
   const [previewImage, setPreviewImage] = useState<string>(userProfile);
-  const [userData, setUserData] = useState<UserInterface | undefined>(undefined);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setPreviewImage(imageUrl);
+      setSelectedFile(file);
     }
   };
 

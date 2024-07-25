@@ -15,23 +15,31 @@ interface StoreListProps {
   onSelectAddress: (address: string) => void;
   isOpen: boolean;
   onClick: () => void;
+  checkVisitedStore: (storeId: string, visitDate: string) => void;
 }
 
-function StoreListItems({ icon, title, places, onSelectAddress, isOpen, onClick }: StoreListProps) {
+function StoreListItems({ icon, title, places, onSelectAddress, isOpen, onClick, checkVisitedStore }: StoreListProps) {
   return (
     <>
-      <ListItemButton onClick={onClick}>
-        <ListItemIcon>
-          <div>{icon}</div>
-        </ListItemIcon>
-        <ListItemText primary={title} />
-        {isOpen ? <ExpandLess /> : <ExpandMore />}
-      </ListItemButton>
-      <Collapse in={isOpen} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <Store places={places} onSelectAddress={onSelectAddress} category={title} />
-        </List>
-      </Collapse>
+      <div style={{ marginTop: '20px' }}>
+        <ListItemButton onClick={onClick}>
+          <ListItemIcon>
+            <div>{icon}</div>
+          </ListItemIcon>
+          <ListItemText primary={title} />
+          {isOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={isOpen} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <Store
+              places={places}
+              onSelectAddress={onSelectAddress}
+              category={title}
+              checkVisitedStore={checkVisitedStore}
+            />
+          </List>
+        </Collapse>
+      </div>
     </>
   );
 }

@@ -40,16 +40,13 @@ function StoreInfoBox({ places, onSelectAddress, onOpenCreateStore, checkVisited
     <div>
       <Button
         sx={{
-          width: '95%',
+          width: '100%',
           boxSizing: 'borderBox',
           lineHeight: '40px',
           listStyle: 'none',
           color: '#4a90e2',
           fontWeight: 500,
-          fontSize: '0.875rem',
-          marginLeft: '8px',
-          paddingLeft: '16px',
-          paddingRight: '16px',
+          fontSize: '14px',
           position: 'sticy',
           marginTop: '10px',
           backgroundColor: '#ffffff',
@@ -63,12 +60,9 @@ function StoreInfoBox({ places, onSelectAddress, onOpenCreateStore, checkVisited
       <List
         sx={{
           marginTop: '10px',
-          width: '98%',
-          maxHeight: '900px',
           overflow: 'auto',
           bgcolor: 'background.paper',
           borderInlineColor: 'blue',
-          padding: '8px',
           borderTop: '1px solid #e0e0e0',
         }}
         component="nav"
@@ -78,11 +72,13 @@ function StoreInfoBox({ places, onSelectAddress, onOpenCreateStore, checkVisited
             component="div"
             id="nested-list-subheader"
             sx={{
-              width: '97%',
               backgroundColor: '#4a90e2',
               borderRadius: '10px',
               color: 'white',
-              textAlign: 'center',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '54px',
             }}
           >
             <strong>나의 맛집 리스트</strong>
@@ -105,51 +101,6 @@ function StoreInfoBox({ places, onSelectAddress, onOpenCreateStore, checkVisited
           );
         })}
       </List>
-      {/* <div
-        style={{
-          marginTop: '10px',
-          width: '98%',
-          maxHeight: '900px',
-          overflow: 'auto',
-          backgroundColor: 'background.paper',
-          borderInlineColor: 'blue',
-          padding: '8px',
-          borderTop: '1px solid #e0e0e0',
-        }}
-      >
-        <div>
-          <ListSubheader
-            component="div"
-            id="nested-list-subheader"
-            sx={{
-              width: '97%',
-              backgroundColor: '#4a90e2',
-              borderRadius: '10px',
-              color: 'white',
-              textAlign: 'center',
-            }}
-          >
-            <strong>나의 맛집 리스트</strong>
-          </ListSubheader>
-        </div>
-      </div>
-      <List component="nav" aria-labelledby="nested-list-subheader">
-        {categories.map((item, idx) => {
-          const filteredPlaces = places.filter((restaurant) => restaurant.foodType === item.title);
-          return (
-            <StoreListItems
-              key={idx}
-              icon={item.icon}
-              title={item.title}
-              places={filteredPlaces}
-              onSelectAddress={onSelectAddress}
-              isOpen={openCategoryIndex === idx}
-              onClick={() => handleCategoryClick(idx)}
-              checkVisitedStore={checkVisitedStore}
-            />
-          );
-        })}
-      </List> */}
     </div>
   );
 }

@@ -57,10 +57,10 @@ function UpdateUserInfo({ userEmail, currentNickname, onClose, onUpdate }: Updat
         <Box>
           <Titel> 정보 수정</Titel>
           <Form onSubmit={handleSubmit}>
-            <TextBox>
-              <Label>이메일</Label>
-              <Text>{formData.userEmail}</Text>
-            </TextBox>
+            <InputBox>
+              <Label> 이메일</Label>
+              <ReadOnlyInput required id="userEmail" name="userEmail" type="text" value={formData.userEmail} readOnly />
+            </InputBox>
             <InputBox>
               <Label> 닉네임</Label>
               <Input
@@ -126,16 +126,16 @@ const Container = styled.div`
 `;
 
 const Box = styled.div`
-  width: 30%;
+  width: 420px;
   background-color: white;
-  height: 600px;
+  /* height: 700px; */
   border-radius: 10px;
   border: 1px solid #007bff;
 `;
 
 const Titel = styled.h1`
   text-align: center;
-  font-size: 30px;
+  font-size: 24px;
   color: #007bff;
 `;
 
@@ -143,60 +143,62 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 20px;
+  gap: 16px;
 `;
 
 const InputBox = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  gap: 8px;
 `;
 
 const Input = styled.input`
-  width: 250px;
-  height: 20px;
+  height: 32px;
   border: 1px solid #007bff;
   border-radius: 5px;
-  font-size: 24px;
-  padding: 16px;
-  margin: 5px 0 5px 0;
+  font-size: 16px;
+  padding: 8px 16px;
+`;
+const ReadOnlyInput = styled.input`
+  height: 32px;
+  border: 1px solid #007bff;
+  background-color: #ededed;
+  border-radius: 5px;
+  font-size: 16px;
+  padding: 8px 16px;
+  pointer-events: none;
+  cursor: not-allowed;
+  /* margin: 8px 0 8px 0; */
+`;
+
+const Select = styled.select`
+  height: 54px;
+  padding: 8px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  font-size: 16px;
 `;
 
 const Label = styled.div`
   color: #007bff;
-  font-size: 20px;
-`;
-
-const TextBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-right: 10px;
-  width: 100%;
-`;
-
-const Text = styled.h2`
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-  color: #007bff;
-  margin-left: 10px;
+  font-size: 16px;
 `;
 
 const ButtonBox = styled.div`
-  width: 80%;
+  width: 100%;
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+  padding: 20px 0;
+  gap: 8px;
 `;
 
 const Button = styled.button`
-  width: 420px;
-  height: 50px;
+  width: 100%;
+  height: 48px;
   background-color: #007bff;
   border: none;
   border-radius: 5px;
-  font-size: 18px;
+  font-size: 16px;
   color: white;
-  margin-left: 5px;
-  margin-right: 5px;
 `;

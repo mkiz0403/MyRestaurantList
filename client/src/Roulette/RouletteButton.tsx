@@ -33,6 +33,6 @@ const Button = styled.button`
   color: white;
   position: absolute;
   top: 10px;
-  left: 55rem;
+  right: 8rem;
   z-index: 10;
 `;

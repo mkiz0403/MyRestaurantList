@@ -133,12 +133,14 @@ function Home() {
             checkVisitedStore={checkVisitedCount}
           />
         </div>
-        <StoresMap
-          places={places}
-          selectedAddress={selectedAddress}
-          userEmail={userInfo?.userEmail || ''}
-          token={token || ''}
-        />
+        <div className="map-container">
+          <StoresMap
+            places={places}
+            selectedAddress={selectedAddress}
+            userEmail={userInfo?.userEmail || ''}
+            token={token || ''}
+          />
+        </div>
         {isCreateStore && userInfo && token && (
           <CreateStore onClose={handleCloseCreate} userEmail={userInfo.userEmail} token={token} />
         )}

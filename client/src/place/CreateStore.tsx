@@ -128,16 +128,16 @@ const Container = styled.div`
 `;
 
 const Box = styled.div`
-  width: 30%;
+  width: 420px;
   background-color: white;
-  height: 750px;
+  /* height: 700px; */
   border-radius: 10px;
   border: 1px solid #007bff;
 `;
 
 const Titel = styled.h1`
   text-align: center;
-  font-size: 30px;
+  font-size: 24px;
   color: #007bff;
 `;
 
@@ -145,55 +145,52 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 20px;
+  gap: 16px;
 `;
 
 const InputBox = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  width: 80%;
+  gap: 8px;
 `;
 
 const Input = styled.input`
-  width: 100%;
-  height: 20px;
+  height: 32px;
   border: 1px solid #007bff;
   border-radius: 5px;
-  font-size: 24px;
-  padding: 16px 0;
-  margin: 10px 0 10px 0;
+  font-size: 16px;
+  padding: 8px 16px;
+  /* margin: 8px 0 8px 0; */
 `;
 
 const Select = styled.select`
-  width: 100%;
   height: 54px;
   padding: 8px;
   border: 1px solid #007bff;
   border-radius: 4px;
-  font-size: 24px;
-  margin: 10px 0 10px 0;
+  font-size: 16px;
 `;
 
 const Label = styled.div`
   color: #007bff;
-  font-size: 20px;
+  font-size: 16px;
 `;
 
 const ButtonBox = styled.div`
-  width: 80%;
+  width: 100%;
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+  padding: 20px 0;
+  gap: 8px;
 `;
 
 const Button = styled.button`
-  width: 420px;
-  height: 50px;
+  width: 100%;
+  height: 48px;
   background-color: #007bff;
   border: none;
   border-radius: 5px;
-  font-size: 18px;
+  font-size: 16px;
   color: white;
-  margin-left: 5px;
-  margin-right: 5px;
 `;

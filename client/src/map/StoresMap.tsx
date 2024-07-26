@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import './StoresMap.css';
 import { useEffect, useRef } from 'react';
 import { UserStore } from '../models/user.interface';
 import SearchStore from '../Roulette/SearchStore';
@@ -158,6 +157,7 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
                   `<div style="padding:10px;min-width:200px;line-height:150%;">
                   <h4 style="margin-top:5px;">검색 좌표</h4><button onclick="setAddressToRegister('${address}')"> 맛집 등록 하기</button><br />
                     ${htmlAddresses.join('<br />')}
+                    <button onclick="closeInfoWindow()">닫기</button>
                   </div>`,
                 );
 
@@ -499,10 +499,7 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
         ref={mapRef}
         style={{
           width: '100%',
-          height: '1100px',
-          display: 'flex',
-          marginTop: '5px',
-          marginLeft: '10px',
+          height: '1120px',
         }}
       >
         <div

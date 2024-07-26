@@ -30,7 +30,8 @@ const Store = ({ places, onSelectAddress, category, checkVisitedStore }: StoreIn
       {places
         .filter((store) => store.foodType === category)
         .map((store, idx) => (
-          <Card sx={{ marginLeft: '10px', paddingLeft: '20px', maxWidth: 345, marginBottom: 2 }} key={idx}>
+          <Card sx={{ maxWidth: 345, marginBottom: 2, marginRight: '10px' }} key={idx}>
+            {/* marginLeft: '10px', paddingLeft: '20px', */}
             <CardHeader title={store.placeName} />
             <CardContent>
               <Typography variant="body2" color="text.secondary">
@@ -75,12 +76,14 @@ const Store = ({ places, onSelectAddress, category, checkVisitedStore }: StoreIn
                   </span>
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  <strong>방문일:</strong>
+                  <strong>방문일</strong>
                   <ol>
-                    {store.visitedDate
-                      ?.sort((a, b) => (a > b ? -1 : 1))
-                      .map((date, index) => <li key={index}>{date}</li>)}
-                  </ol>{' '}
+                    {store.visitedDate && store.visitedDate.length > 0
+                      ? store.visitedDate
+                          ?.sort((a, b) => (a > b ? -1 : 1))
+                          .map((date, index) => <li key={index}>{date}</li>)
+                      : '없음'}
+                  </ol>
                 </Typography>
               </CardContent>
             </Collapse>

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import { createStore } from '../../api/userStoreApi';
 
@@ -8,12 +8,14 @@ interface CreateStoreProps {
   token: string;
 }
 
+const foodOptions = ['한식', '양식', '일식', '중식', '기타'];
+
 function CreateStore({ onClose, userEmail, token }: CreateStoreProps) {
   const [placeName, setPlaceName] = useState('');
-  const [foodType, setFoodType] = useState('');
   const [address, setAddress] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [review, setReview] = useState('');
+  const [foodType, setFoodType] = useState('');
   const [visitedDate, setVisitedDate] = useState([]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -27,6 +29,13 @@ function CreateStore({ onClose, userEmail, token }: CreateStoreProps) {
       console.log('스토어 생성 실패!', error);
     }
   }
+
+  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedOption = e.target.value;
+    if (selectedOption && !foodType.includes(selectedOption)) {
+      setFoodType(selectedOption);
+    }
+  };
 
   return (
     <>
@@ -47,14 +56,16 @@ function CreateStore({ onClose, userEmail, token }: CreateStoreProps) {
             </InputBox>
             <InputBox>
               <Label>음식종류</Label>
-              <Input
-                required
-                id="storeType"
-                name="storeType"
-                type="text"
-                value={foodType}
-                onChange={(e) => setFoodType(e.target.value)}
-              />
+              <Select id="storeType" name="storeType" value={foodType} onChange={handleSelectChange}>
+                <option value="" disabled>
+                  음식 종류를 선택하세요
+                </option>
+                {foodOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </Select>
             </InputBox>
             <InputBox>
               <Label>매장사진</Label>
@@ -150,6 +161,16 @@ const Input = styled.input`
   border-radius: 5px;
   font-size: 24px;
   padding: 16px 0;
+  margin: 10px 0 10px 0;
+`;
+
+const Select = styled.select`
+  width: 100%;
+  height: 54px;
+  padding: 8px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  font-size: 24px;
   margin: 10px 0 10px 0;
 `;
 

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { UserStore } from '../models/user.interface';
 import SearchStore from '../Roulette/SearchStore';
 import RouletteButton from '../Roulette/RouletteButton';
@@ -10,6 +10,7 @@ declare global {
     naver: any;
     copyToClipboard: any;
     closeInfoWindow: () => void;
+    addToRoulette: (placeName: string) => void;
   }
 }
 
@@ -24,6 +25,8 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
   const mapRef = useRef<any>(null);
   const infoWindowRef = useRef<any>(null);
   const mapInstance = useRef<any>(null);
+  const [rouletteStore, setRouletteStore] = useState<string[]>([]);
+
   // const [addressToRegister, setAddressToRegister] = useState<string | null>(null);
 
   useEffect(() => {
@@ -262,6 +265,12 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
             searchAddressToCoordinate(selectedAddress);
           }
 
+          window.addToRoulette = (placeName: string) => {
+            if (!rouletteStore.includes(placeName)) {
+              setRouletteStore((prevItems) => [...prevItems, placeName]);
+            }
+          };
+
           places.forEach((place) => {
             naver.maps.Service.geocode(
               {
@@ -284,6 +293,7 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
                     '<div style="padding: 10px; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 16px 0px;">',
                     `   <div style="font-weight: bold; margin-bottom: 5px;">${place.placeName}</div>`,
                     `   <div style="font-size: 13px;">${place.review}<div>`,
+                    `   <button onclick="addToRoulette('${place.placeName}')">룰렛에 추가</button>`,
                     '</div>',
                   ].join(''),
                   maxWidth: 300,
@@ -358,7 +368,7 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
       );
     };
     initMap();
-  }, [places, selectedAddress]);
+  }, [places, selectedAddress, rouletteStore]);
 
   const handleSearchAddress = (e: React.FormEvent) => {
     e.preventDefault();
@@ -440,7 +450,7 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
       const store = await getOneUserStore(userEmail, searchTerm, token);
 
       if (store) {
-        const { address, placeName, review } = store;
+        const { address, placeName } = store;
         const { naver } = window;
 
         naver.maps.Service.geocode(
@@ -457,30 +467,11 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
 
             if (mapInstance.current) {
               mapInstance.current.setCenter(latlng);
-              const marker = new naver.maps.Marker({
-                position: latlng,
-                map: mapInstance.current,
-              });
+              const marker = mapInstance.current.markers.find((m: any) => m.getTitle() === placeName);
 
-              const infoWindow = new naver.maps.InfoWindow({
-                content: `
-                  <div style="padding:10px;min-width:200px;">
-                    <h4>${placeName}</h4>
-                    <p>${address}</p>
-                    <p>${review || '리뷰 없음'}</p>
-                  </div>
-                `,
-              });
-
-              naver.maps.Event.addListener(marker, 'click', () => {
-                if (infoWindow.getMap()) {
-                  infoWindow.close();
-                } else {
-                  infoWindow.open(mapInstance.current, marker);
-                }
-              });
-
-              infoWindow.open(mapInstance.current, marker);
+              if (marker) {
+                naver.maps.Event.trigger(marker, 'click');
+              }
             }
           },
         );
@@ -505,9 +496,9 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
         <div
           className="search-bar"
           style={{
-            position: 'absolute',
-            top: '10px',
-            left: '10px',
+            position: 'fixed',
+            top: '1rem',
+            left: '24rem',
             zIndex: 10,
             background: 'white',
             padding: '10px',
@@ -519,7 +510,7 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
           <button onClick={handleSearchAddress}>검색</button>
         </div>
         <SearchStore onSearch={handleSearchStore} />
-        <RouletteButton />
+        <RouletteButton stores={rouletteStore} setStore={setRouletteStore} userStore={places} />
       </div>
     </>
   );

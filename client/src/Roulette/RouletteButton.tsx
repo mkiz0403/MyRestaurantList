@@ -31,7 +31,6 @@ function RouletteButton({ stores, setStore, userStore, addToRoulette }: Roulette
     setStore([]);
   }
 
-
   function spinRoulette() {
     if (stores.length > 0) {
       const randomIndex = Math.floor(Math.random() * stores.length);
@@ -43,18 +42,11 @@ function RouletteButton({ stores, setStore, userStore, addToRoulette }: Roulette
     }
   }
 
-
   return (
     <>
       <Button onClick={handleRouletteON}>맛집 뽑기 😋</Button>
       {openRoulette && (
-        <RouletteStoreAddPopup
-          stores={stores}
-          setStore={setStore}
-          onClose={handleRouletteOff}
-          onSpin={spinRoulette}
-          addToRoulette={addToRoulette}
-        />
+        <RouletteStoreAddPopup stores={stores} setStore={setStore} onClose={handleRouletteOff} onSpin={spinRoulette} />
       )}
       {showResult && (
         <ResultStore result={result} spinRoulette={spinRoulette} onClose={handleResultClose} userStore={userStore} />

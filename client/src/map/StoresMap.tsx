@@ -1,7 +1,6 @@
 import $ from 'jquery';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { UserStore } from '../models/user.interface';
-import SearchStore from '../Roulette/SearchStore';
 import RouletteButton from '../Roulette/RouletteButton';
 import { getOneUserStore } from '../../api/userStoreApi';
 
@@ -19,26 +18,32 @@ interface MapProps {
   selectedAddress: string | null;
   userEmail: string;
   token: string;
+  stores: string[];
+  setStore: React.Dispatch<React.SetStateAction<string[]>>;
+  addToRoulette: (placeName: string) => void;
 }
 
-const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
-  const mapRef = useRef<any>(null);
+const StoresMap = ({ places, selectedAddress, userEmail, token, stores, setStore, addToRoulette }: MapProps) => {
+  const mapRef = useRef<HTMLDivElement>(null);
   const infoWindowRef = useRef<any>(null);
   const mapInstance = useRef<any>(null);
-  const [rouletteStore, setRouletteStore] = useState<string[]>([]);
-
-  // const [addressToRegister, setAddressToRegister] = useState<string | null>(null);
 
   useEffect(() => {
     window.copyToClipboard = (text: string) => {
-      navigator.clipboard.writeText(text).then(
-        () => {
-          alert('주소가 복사되었습니다!');
-        },
-        (err) => {
+      navigator.clipboard
+        .writeText(text)
+        .then(
+          () => {
+            alert('주소가 복사되었습니다!');
+          },
+          () => {
+            alert('복사에 실패했습니다. 다시 시도해주세요.');
+          },
+        )
+        .catch((error: unknown) => {
+          console.error('Error:', error);
           alert('복사에 실패했습니다. 다시 시도해주세요.');
-        },
-      );
+        });
     };
 
     const { naver } = window;
@@ -46,20 +51,20 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
     if (!naver) return;
 
     const initMap = () => {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
 
-          const mapOptions = {
-            center: new naver.maps.LatLng(latitude, longitude),
-            zoom: 16,
-            zoomControl: true,
-            zoomControlOptions: {
-              style: naver.maps.ZoomControlStyle.LARGE,
-              position: naver.maps.Position.TOP_RIGHT,
-            },
-          };
+        const mapOptions = {
+          center: new naver.maps.LatLng(latitude, longitude),
+          zoom: 16,
+          zoomControl: true,
+          zoomControlOptions: {
+            style: naver.maps.ZoomControlStyle.LARGE,
+            position: naver.maps.Position.TOP_RIGHT,
+          },
+        };
 
+        if (mapRef.current) {
           const map = new naver.maps.Map(mapRef.current, mapOptions);
           mapInstance.current = map;
 
@@ -265,10 +270,14 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
             searchAddressToCoordinate(selectedAddress);
           }
 
+          // window.addToRoulette = (placeName: string) => {
+          //   if (!rouletteStore.includes(placeName)) {
+          //     setRouletteStore((prevItems) => [...prevItems, placeName]);
+          //   }
+          // };
+
           window.addToRoulette = (placeName: string) => {
-            if (!rouletteStore.includes(placeName)) {
-              setRouletteStore((prevItems) => [...prevItems, placeName]);
-            }
+            addToRoulette(placeName);
           };
 
           places.forEach((place) => {
@@ -361,14 +370,14 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
               },
             );
           }
-        },
-        (error) => {
+        }
+        (error: unknown) => {
           console.error('Error getting current position:', error);
-        },
-      );
+        };
+      });
     };
     initMap();
-  }, [places, selectedAddress, rouletteStore]);
+  }, [places, selectedAddress, addToRoulette]);
 
   const handleSearchAddress = (e: React.FormEvent) => {
     e.preventDefault();
@@ -440,50 +449,6 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
     );
   };
 
-  const handleSearchStore = async (searchTerm: string) => {
-    try {
-      if (!userEmail || !token) {
-        alert('사용자 정보가 없습니다. 다시 로그인해주세요.');
-        return;
-      }
-
-      const store = await getOneUserStore(userEmail, searchTerm, token);
-
-      if (store) {
-        const { address, placeName } = store;
-        const { naver } = window;
-
-        naver.maps.Service.geocode(
-          {
-            query: address,
-          },
-          function (status: any, response: any) {
-            if (status !== naver.maps.Service.Status.OK) {
-              return alert('주소를 찾을 수 없습니다.');
-            }
-
-            const result = response.v2.addresses[0];
-            const latlng = new naver.maps.LatLng(result.y, result.x);
-
-            if (mapInstance.current) {
-              mapInstance.current.setCenter(latlng);
-              const marker = mapInstance.current.markers.find((m: any) => m.getTitle() === placeName);
-
-              if (marker) {
-                naver.maps.Event.trigger(marker, 'click');
-              }
-            }
-          },
-        );
-      } else {
-        alert('검색된 음식점 정보가 없습니다.');
-      }
-    } catch (error) {
-      console.error('음식점 검색 오류:', error);
-      alert('음식점을 검색하는 중 오류가 발생했습니다.');
-    }
-  };
-
   return (
     <>
       <div
@@ -498,7 +463,7 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
           style={{
             position: 'fixed',
             top: '1rem',
-            left: '24rem',
+            left: '28rem',
             zIndex: 10,
             background: 'white',
             padding: '10px',
@@ -509,8 +474,7 @@ const StoresMap = ({ places, selectedAddress, userEmail, token }: MapProps) => {
           <input id="address" type="text" placeholder="주소 검색" />
           <button onClick={handleSearchAddress}>검색</button>
         </div>
-        <SearchStore onSearch={handleSearchStore} />
-        <RouletteButton stores={rouletteStore} setStore={setRouletteStore} userStore={places} />
+        <RouletteButton stores={stores} setStore={setStore} userStore={places} addToRoulette={addToRoulette} />
       </div>
     </>
   );

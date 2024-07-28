@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import StoresMap from './map/StoresMap';
-import StoreInfoBox from './place/StoreInfoBox';
-import CreateStore from './place/CreateStore';
+import StoreInfoBox from './Store/StoreInfoBox';
+import CreateStore from './Store/CreateStore';
 import UserInfo from './user/UserInfo';
 import UpdateUserInfo from './user/UpdataUserInfo';
-// import Category from './user/Category';
 import UserInterface from './models/user.interface';
 import { UserStore } from './models/user.interface';
-import { getUser, getUserStore, updateStore } from '../api/userStoreApi';
+import { getUser, getUserStore, updateStore, deleteOneStore } from '../api/userStoreApi';
 
 function Home() {
   const navigate = useNavigate();
@@ -21,7 +20,31 @@ function Home() {
   const [currentUserEmail, setCurrentUserEmail] = useState<string>('');
   const [userInfo, setUserInfo] = useState<UserInterface | undefined>();
   const [places, setPlaces] = useState<UserStore[]>([]);
+  const [rouletteStores, setRouletteStores] = useState<string[]>([]);
   const [token, setToken] = useState<string | null>(null);
+
+  const fetchUserInfo = useCallback(async () => {
+    const storedToken = localStorage.getItem('jwtToken');
+    const storedUserEmail = localStorage.getItem('userEmail');
+    if (storedToken && storedUserEmail) {
+      setToken(storedToken);
+      const user = await getUser(storedUserEmail, storedToken);
+      if (user) {
+        setUserInfo(user);
+      }
+
+      const stores = await getUserStore(storedUserEmail, storedToken);
+      if (stores) {
+        setPlaces(stores);
+      }
+    } else {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, [fetchUserInfo]);
 
   function handleOpenCreate() {
     setCreateStore(true);
@@ -32,6 +55,12 @@ function Home() {
     console.log('닫힘');
   }
 
+  const addToRoulette = (placeName: string) => {
+    if (!rouletteStores.includes(placeName)) {
+      setRouletteStores([...rouletteStores, placeName]);
+    }
+  };
+
   function handleOpenUpdateUserInfo(userEmail: string, nickName: string) {
     setCurrentUserEmail(userEmail);
     setCurrentNickname(nickName);
@@ -40,6 +69,7 @@ function Home() {
 
   function handleCloseUpdateUserInfo() {
     setUpdateUserInfoVisible(false);
+    fetchUserInfo();
   }
   function handleUserUpdate(updatedUser: UserInterface) {
     setUserInfo(updatedUser);
@@ -69,6 +99,7 @@ function Home() {
         placeToUpdate.review,
         placeToUpdate.visitedDate,
       );
+      await fetchUserInfo();
     }
   }
 
@@ -85,29 +116,21 @@ function Home() {
     }
   }
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      const token = localStorage.getItem('jwtToken');
-      const userEmail = localStorage.getItem('userEmail');
-      if (token && userEmail) {
-        setToken(token);
-        const user = await getUser(userEmail, token);
-        if (user) {
-          setUserInfo(user);
-        }
+  async function handleUpdatePlaces(updatedPlaces: UserStore[]) {
+    setPlaces(updatedPlaces);
+    await fetchUserInfo();
+  }
 
-        const stores = await getUserStore(userEmail, token);
-
-        if (stores) {
-          setPlaces(stores);
-        }
-      } else {
-        navigate('/login');
-      }
-    };
-
-    fetchUserInfo();
-  }, [navigate]);
+  const handleDeleteStore = async (userEmail: string, storeId: string, token: string) => {
+    try {
+      const deletedStore = await deleteOneStore(userEmail, storeId, token);
+      await fetchUserInfo();
+      return deletedStore;
+    } catch (error) {
+      console.error('Error deleting store:', error);
+      return undefined;
+    }
+  };
 
   return (
     <>
@@ -131,6 +154,11 @@ function Home() {
             onSelectAddress={setSelectedAddress}
             onOpenCreateStore={handleOpenCreate}
             checkVisitedStore={checkVisitedCount}
+            addToRoulette={addToRoulette}
+            userEmail={userInfo?.userEmail || ''}
+            token={token || ''}
+            onUpdatePlaces={handleUpdatePlaces}
+            handleDeleteStore={handleDeleteStore}
           />
         </div>
         <div className="map-container">
@@ -139,6 +167,9 @@ function Home() {
             selectedAddress={selectedAddress}
             userEmail={userInfo?.userEmail || ''}
             token={token || ''}
+            addToRoulette={addToRoulette}
+            stores={rouletteStores}
+            setStore={setRouletteStores}
           />
         </div>
         {isCreateStore && userInfo && token && (

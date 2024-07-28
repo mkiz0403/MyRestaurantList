@@ -8,10 +8,11 @@ interface RouletteButtonProps {
   userStore: UserStore[];
   stores: string[];
   setStore: React.Dispatch<React.SetStateAction<string[]>>;
+  addToRoulette: (placeName: string) => void;
 }
 
-function RouletteButton({ stores, setStore, userStore }: RouletteButtonProps) {
-  const [openRoulette, setOpenRoulette] = useState(true);
+function RouletteButton({ stores, setStore, userStore, addToRoulette }: RouletteButtonProps) {
+  const [openRoulette, setOpenRoulette] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
 
@@ -30,6 +31,7 @@ function RouletteButton({ stores, setStore, userStore }: RouletteButtonProps) {
     setStore([]);
   }
 
+
   function spinRoulette() {
     if (stores.length > 0) {
       const randomIndex = Math.floor(Math.random() * stores.length);
@@ -41,11 +43,18 @@ function RouletteButton({ stores, setStore, userStore }: RouletteButtonProps) {
     }
   }
 
+
   return (
     <>
       <Button onClick={handleRouletteON}>맛집 뽑기 😋</Button>
       {openRoulette && (
-        <RouletteStoreAddPopup stores={stores} setStore={setStore} onClose={handleRouletteOff} onSpin={spinRoulette} />
+        <RouletteStoreAddPopup
+          stores={stores}
+          setStore={setStore}
+          onClose={handleRouletteOff}
+          onSpin={spinRoulette}
+          addToRoulette={addToRoulette}
+        />
       )}
       {showResult && (
         <ResultStore result={result} spinRoulette={spinRoulette} onClose={handleResultClose} userStore={userStore} />

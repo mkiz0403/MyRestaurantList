@@ -58,7 +58,7 @@ function UpdateUserInfo({ userEmail, currentNickname, onClose, onUpdate }: Updat
           <Titel> 정보 수정</Titel>
           <Form onSubmit={handleSubmit}>
             <InputBox>
-              <Label> 이메일</Label>
+              <Label> 아이디</Label>
               <ReadOnlyInput required id="userEmail" name="userEmail" type="text" value={formData.userEmail} readOnly />
             </InputBox>
             <InputBox>

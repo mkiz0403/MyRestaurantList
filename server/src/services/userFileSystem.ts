@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const userDataFilePath = path.join(__dirname, '..', 'data', 'userData.json');
 
-// 유저 데이터 파일에서 이메일로 유저를 찾는 함수
+// 유저 데이터 파일에서 아이디로 유저를 찾는 함수
 async function findUserbyId(userEmail: string): Promise<UserInterface | undefined> {
   try {
     const data = await fs.readFile(userDataFilePath, 'utf8');

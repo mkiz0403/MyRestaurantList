@@ -66,7 +66,7 @@ function LoginPage() {
         <Form>
           <FormFiled>
             <FormFiled>
-              <Label>이메일</Label>
+              <Label>아이디</Label>
               <Input required id="userEmail" value={userEmail} onChange={(e) => setUserEmail(e.target.value)} />
             </FormFiled>
             <FormFiled />

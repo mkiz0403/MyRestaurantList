@@ -463,7 +463,7 @@ const StoresMap = ({ places, selectedAddress, userEmail, token, stores, setStore
           style={{
             position: 'fixed',
             top: '1rem',
-            left: '28rem',
+            left: '34rem',
             zIndex: 10,
             background: 'white',
             padding: '10px',

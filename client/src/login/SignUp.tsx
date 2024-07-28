@@ -18,11 +18,12 @@ function SignUp() {
     }
     try {
       const userInfo = await signup(userEmail, password, userNickName);
-      console.log(`유저이메일: ${userEmail}, 유저 닉네임: ${userNickName}`);
+      console.log(`유저아이디: ${userEmail}, 유저 닉네임: ${userNickName}`);
       console.log('회원가입');
       alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
       navigate('/login');
     } catch (error) {
+      alert('가입 정보를 다시 확인해 주세요.');
       console.error('에러발생');
     }
   }
@@ -57,7 +58,7 @@ function SignUp() {
                     type="email"
                     id="email"
                     name="email"
-                    label="이메일 주소"
+                    label="아이디"
                     value={userEmail}
                     onChange={(e) => setUserEmail(e.target.value)}
                   />

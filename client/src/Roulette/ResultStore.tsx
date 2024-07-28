@@ -29,7 +29,7 @@ function ResultStore({ result, spinRoulette, onClose, userStore }: ResultStorePr
                 : '없음'}
             </span>
           </CardInfo>
-          <ItemDescription>메장 메모 : {store?.review}</ItemDescription>
+          <ItemDescription>매장 메모 : {store?.review}</ItemDescription>
           <span>주소 : {store?.address}</span>
           <ButtonBox>
             <Button type="submit" onClick={spinRoulette}>

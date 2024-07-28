@@ -17,10 +17,11 @@ export async function login(
       console.log('로그인에 성공했습니다.');
       return { token, user };
     } else {
-      throw new Error('유저 이메일이 일치하지 않습니다.');
+      throw new Error('유저 아이디가 일치하지 않습니다.');
     }
   } catch (error) {
     console.error('로그인 에러 발생');
+    throw error;
   }
 }
 
@@ -49,7 +50,7 @@ export async function getUser(userEmail: string, token: string): Promise<UserInt
     console.error('유저 정보를 가져올 수 없습니다.');
   }
 }
-
+// 유저 정보 업데이트
 export async function userUpdate(
   userEmail: string,
   userNickName: string,

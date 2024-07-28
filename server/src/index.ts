@@ -60,7 +60,7 @@ app.post('/signup', async (req, res) => {
     });
 
     if (!newUser?.userEmail) {
-      return res.status(400).send({ message: '동일한 이메일이 존재합니다.' });
+      return res.status(400).send({ message: '동일한 아이디가 존재합니다.' });
     } else if (!newUser?.userNickName) {
       return res.status(400).send({ message: '동일한 닉네임이 존재합니다.' });
     }

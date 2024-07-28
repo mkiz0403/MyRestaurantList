@@ -10,9 +10,8 @@ function App() {
     <>
       <Router>
         <Routes>
-          {/* <Route path="/" element={<Navigate to="/login" replace />} /> */}
           <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/user/:userEmail" element={<Home />} />
+          <Route path="/user/:userId" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUp />} />
         </Routes>
